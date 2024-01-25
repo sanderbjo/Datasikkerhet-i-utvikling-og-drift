@@ -1,0 +1,94 @@
+* {
+    box-sizing: border-box;
+    font-family: arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    /*border: 0;*/
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px lightgrey solid;
+}
+
+header ul {
+    display: flex;
+    list-style: none;
+}
+
+header li {
+    display: block;
+}
+header a {
+    display: block;
+    padding: 1rem;
+}
+
+header a:hover {
+    background: lightgrey;
+}
+
+.module-wrapper {
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+    padding-top: 4rem;
+}
+
+.login-module,
+.change-password-module {
+    width: 100%;
+    max-width: 20rem;
+    align-self: center;
+    justify-self: center;
+}
+
+.login-form,
+.change-password-form {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.login-form div,
+.change-password-form div {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.login-form div:not(:last-child),
+.change-password-form div:not(:last-child){
+    margin-bottom: 1rem;
+}
+
+.login-form-password a {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.module-header {
+    text-align: center;
+    font-weight: bold;
+}
+.error {
+    color: darkred;
+    font-weight: bold;
+}
+
+form div .error {
+    position: absolute;
+    left: calc(100% + 1rem);
+    bottom: 0;
+    width: max-content;
+}
+
+.login-other-options div {
+    margin-bottom: 1rem;
+}
+
+.center {
+    text-align: center;
+}
