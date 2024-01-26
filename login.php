@@ -1,22 +1,12 @@
-<!DOCTYPE html>
-<html lang="nb">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body>
-
 <?php
+session_start();
+
 $wrongEmailPassword = "Feil e-post eller passord";
 
 $loginError = "";
 $email = $password = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($_POST["email"])) {
         $loginError = $wrongEmailPassword;
     } else {
@@ -24,19 +14,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = trim($email);
         $email = htmlspecialchars($email);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $emailError = $wrongEmailPassword;
+            $loginError = $wrongEmailPassword;
+        } else {
+            if (empty($_POST["password"])) {
+                $loginError = $wrongEmailPassword;
+            }
         }
     }
 
-    if (empty($_POST["password"])) {
-        $passwordError = $wrongEmailPassword;
+    if (strcmp($loginError, "") === 0) {
+        # TODO: Hente data fra database og sammenlign med input
+        $userID = "HER SKAL BRUKERID BLI HENTET FRA DATABASE";
+
+        # TODO: Hvis epost/passord er riktig, lag en session og redirect
+        $_SESSION["user"] = $userID;
+        header("Location: index.php");
+        exit;
     }
 }
-
-# TODO: Hente data fra database og sammenlign med input
-# TODO: Hvis epost/passord er riktig, lag en session og redirect
-
 ?>
+
+<!DOCTYPE html>
+<html lang="nb">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logg inn</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
 
 <main>
     <div class="module-wrapper">
@@ -59,10 +67,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </form>
             <div class="login-other-options center">
                 <div class="login-option-code">
-                    <p><a href="/login-code">Anonym innlogging med kode</a></p>
+                    <p><a href="/anon-login.php">Anonym innlogging med kode</a></p>
                 </div>
                 <div class="login-option-signup center">
-                    <p>Ny? <a href="/signup">Opprett en konto</a>
+                    <p><a href="/signup">Opprett en konto</a>
                     </p>
                 </div>
             </div>

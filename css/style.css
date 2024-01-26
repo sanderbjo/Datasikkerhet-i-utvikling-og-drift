@@ -4,6 +4,7 @@
     margin: 0;
     padding: 0;
     /*border: 0;*/
+    list-style: none;
 }
 
 header {
@@ -25,7 +26,16 @@ header a {
     padding: 1rem;
 }
 
-header a:hover {
+header button {
+    display: block;
+    background: none;
+    border: none;
+    padding: 1rem;
+    font-size: 1em;
+}
+
+header a:hover,
+header button:hover {
     background: lightgrey;
 }
 
@@ -37,7 +47,8 @@ header a:hover {
 }
 
 .login-module,
-.change-password-module {
+.change-password-module,
+.anon-login-module {
     width: 100%;
     max-width: 20rem;
     align-self: center;
@@ -91,4 +102,8 @@ form div .error {
 
 .center {
     text-align: center;
+}
+
+.wrapper {
+    padding: 2rem 4rem;
 }

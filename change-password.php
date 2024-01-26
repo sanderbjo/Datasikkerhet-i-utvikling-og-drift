@@ -1,3 +1,43 @@
+<?php
+include "validate.php";
+
+$fullName = "NAME";
+$minimumPasswordLength = 1;
+
+$wrongPassword = "Passordet er feil";
+$passwordCantBeNull = "Passordet kan ikke være blankt";
+$passwordConfirmationFail = "Passordet matcher ikke";
+$passwordTooShort = "Passordet er for kort. Minst $minimumPasswordLength tegn";
+
+$oldPasswordError = $newPasswordError = $newPasswordConfirmationError = "";
+$oldPassword = $newPassword = $newPasswordConfirmation = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (empty($_POST["old-password"])) {
+        $oldPasswordError = $wrongPassword;
+    } else {
+        $oldPassword = $_POST["old-password"];
+    }
+    if (empty($_POST["new-password"])) {
+        $newPasswordError = $passwordCantBeNull;
+    } elseif (empty($_POST["new-password-confirmation"])) {
+        $newPasswordConfirmationError = $passwordConfirmationFail;
+    } else {
+        $newPassword = $_POST["new-password"];
+        $newPasswordConfirmation = $_POST["new-password-confirmation"];
+        if (strlen($newPassword) < $minimumPasswordLength) {
+            $newPasswordError = $passwordTooShort;
+        } elseif (strcmp($newPassword, $newPasswordConfirmation) != 0) {
+            $newPasswordConfirmationError = $passwordConfirmationFail;
+        }
+    }
+
+}
+
+# TODO: Sjekk at gammelt passord matcher. Og at nytt passord matcher med bekreftene passord
+# TODO: Deretter oppdater passord og gi tilbakemelding til bruker
+?>
+
 <!DOCTYPE html>
 <html lang="nb">
 
@@ -5,51 +45,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bytt passord</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
 
 <?php include "header.html" ?>
-
-<?php
-$fullName = "NAME";
-$minimumPasswordLength = 6;
-
-$wrongPassword = "Passordet er feil";
-$newPasswordCantBeNull = "Passordet kan ikke være blankt";
-$newPasswordConfirmationFail = "Passordet matcher ikke";
-
-$oldPasswordError = $newPasswordError = $newPasswordConfirmationError = "";
-$oldPassword = $newPassword = $newPasswordConfirmation = "";
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (empty($_POST["old-password"])) {
-        $oldPasswordError = $wrongPassword;
-    } else {
-        $oldPassword = $_POST["old-password"];
-    }
-    if (empty($_POST["new-password"])) {
-        $newPasswordError = $newPasswordCantBeNull;
-    } elseif (empty($_POST["new-password-confirmation"])) {
-        $newPasswordConfirmationError = $newPasswordConfirmationFail;
-    } else {
-        $newPassword = $_POST["new-password"];
-        $newPasswordConfirmation = $_POST["new-password-confirmation"];
-        if (strlen($newPassword) < $minimumPasswordLength) {
-            $newPasswordError = "Passordet er for kort. Minst $minimumPasswordLength tegn";
-        } elseif (strcmp($newPassword, $newPasswordConfirmation) != 0) {
-            $newPasswordConfirmationError = $newPasswordConfirmationFail;
-        }
-    }
-
-}
-
-# TODO: Hent session og så navn. Hvis ingen session finnes, redirect
-# TODO: Sjekk at passord matcher. og at nytt passord matcher med bekreftene passord
-# TODO: Deretter oppdater passord og gi tilbakemelding til bruker
-
-?>
 
 <main>
     <div class="module-wrapper">
