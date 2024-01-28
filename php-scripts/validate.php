@@ -14,4 +14,4 @@ if (strcmp($_SESSION["user"], "anon")) {
     exit;
     }
 }
-?>
+

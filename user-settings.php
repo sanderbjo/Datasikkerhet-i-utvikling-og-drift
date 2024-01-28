@@ -1,5 +1,5 @@
 <?php
-include "validate.php";
+require "php-scripts/validate.php";
 ?>
 
 <!DOCTYPE html>
@@ -14,7 +14,7 @@ include "validate.php";
 
 <body>
 
-<?php include "header.html" ?>
+<?php include "modules/header.php" ?>
 
 <main>
     <div class="wrapper">

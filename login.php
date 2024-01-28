@@ -46,6 +46,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body>
 
+<?php
+include "modules/header.php";
+?>
+
 <main>
     <div class="module-wrapper">
         <div class="login-module">
@@ -70,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <p><a href="/anon-login.php">Anonym innlogging med kode</a></p>
                 </div>
                 <div class="login-option-signup center">
-                    <p><a href="/signup">Opprett en konto</a>
+                    <p><a href="/signup.php">Opprett en konto</a>
                     </p>
                 </div>
             </div>

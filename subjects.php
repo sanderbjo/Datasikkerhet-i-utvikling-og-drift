@@ -1,8 +1,8 @@
 <?php
-include "validate.php";
+include "php-scripts/validate.php";
 
 /* Foreløpig eksempelkode, skal endres i forhold til databasen
-include "db_connection.php";
+include "db-connection.php";
 // Sjekk om emnekode er angitt i URL
 if (isset($_GET['emnekode'])) {
     $emnekode = htmlspecialchars($_GET['emnekode']);
@@ -51,7 +51,7 @@ if (isset($_GET['emnekode'])) {
 
 <body>
 
-<?php include "header.html"; ?>
+<?php include "modules/header.php"; ?>
 
 <main>
 <div class="module-wrapper">

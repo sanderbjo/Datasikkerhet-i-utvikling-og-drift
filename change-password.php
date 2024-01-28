@@ -1,5 +1,6 @@
 <?php
-include "validate.php";
+require "php-scripts/validate.php";
+require "php-scripts/db-connection.php";
 
 $fullName = "NAME";
 $minimumPasswordLength = 1;
@@ -50,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body>
 
-<?php include "header.html" ?>
+<?php include "modules/header.php" ?>
 
 <main>
     <div class="module-wrapper">

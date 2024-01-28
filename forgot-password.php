@@ -1,5 +1,5 @@
 <?php
-include "db_connection.php"; // Koble til databasen
+require "php-scripts/db-connection.php"; // Koble til databasen
 
 $email = $emailError = "";
 
@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body>
 
-<?php include "header.html"; ?>
+<?php include "header.php"; ?>
 
 <main>
     <div class="module-wrapper">
