@@ -1,5 +1,5 @@
 <?php
-include "php-scripts/validate.php";
+include "includes/validate.php";
 
 /* Foreløpig eksempelkode, skal endres i forhold til databasen
 include "db-connection.php";

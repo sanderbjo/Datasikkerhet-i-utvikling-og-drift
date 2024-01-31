@@ -1,6 +1,6 @@
 <?php
-require "php-scripts/validate.php";
-require "php-scripts/db-connection.php";
+require "includes/validate.php";
+require "includes/db-connection.php";
 
 $fullName = "NAME";
 $minimumPasswordLength = 1;

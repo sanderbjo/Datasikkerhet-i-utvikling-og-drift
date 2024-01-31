@@ -1,5 +1,5 @@
 <?php
-require "php-scripts/validate.php";
+require "includes/validate.php";
 ?>
 
 <!DOCTYPE html>

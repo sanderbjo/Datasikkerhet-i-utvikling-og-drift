@@ -1,35 +1,46 @@
 <?php
 session_start();
 
-$wrongEmailPassword = "Feil e-post eller passord";
+$wrongEmailOrPassword = "Feil e-post eller passord";
 
 $loginError = "";
 $email = $password = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($_POST["email"])) {
-        $loginError = $wrongEmailPassword;
+        $loginError = $wrongEmailOrPassword;
+    } elseif (empty($_POST["password"])) {
+        $loginError = $wrongEmailOrPassword;
     } else {
         $email = $_POST["email"];
         $email = trim($email);
         $email = htmlspecialchars($email);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $loginError = $wrongEmailPassword;
-        } else {
-            if (empty($_POST["password"])) {
-                $loginError = $wrongEmailPassword;
-            }
+            $loginError = $wrongEmailOrPassword;
         }
     }
 
-    if (strcmp($loginError, "") === 0) {
-        # TODO: Hente data fra database og sammenlign med input
-        $userID = "HER SKAL BRUKERID BLI HENTET FRA DATABASE";
-
-        # TODO: Hvis epost/passord er riktig, lag en session og redirect
-        $_SESSION["user"] = $userID;
-        header("Location: index.php");
-        exit;
+    if (empty($loginError)) {
+        require "includes/db-connection.php";
+        $stmt = $conn->prepare("SELECT 'id', 'epost', 'passord' 'bruker' " .
+                               "WHERE 'epost' = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
+        $conn->close();
+        if ($stmt->num_rows === 1) {
+            $resultId = -1;
+            $resultEmail = $resultPassword = "";
+            $stmt->bind_result($resultId, $resultEmail, $resultPassword);
+            if ($resultPassword === $password) {
+                $_SESSION["user"] = $resultId;
+                $_SESSION["loggedIn"] = true;
+                header("Location: index.php");
+                exit;
+            } else {
+                $loginError = $wrongEmailOrPassword;
+            }
+        }
     }
 }
 ?>
@@ -63,7 +74,7 @@ include "modules/header.php";
                 <div class="login-form-password">
                     <label for="password">Passord</label>
                     <input type="password" name="password" id="password">
-                    <a href="/forgot-password">Glemt passord?</a>
+                    <a href="/forgot-password.php">Glemt passord?</a>
                 </div>
                 <div class="form-submit">
                     <button>Logg inn</button>

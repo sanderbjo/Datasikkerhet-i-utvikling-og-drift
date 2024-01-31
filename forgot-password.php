@@ -1,5 +1,5 @@
 <?php
-require "php-scripts/db-connection.php"; // Koble til databasen
+require "includes/db-connection.php"; // Koble til databasen
 
 $email = $emailError = "";
 
