@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <header>
     <nav>
         <ul>
@@ -9,10 +6,10 @@ session_start();
     </nav>
     <div class="user-options">
         <?php
-        if ($_SESSION["loggedIn"] === true && $_SESSION["anon"] === false) {
-            include "header-modules/user-options-logged-in.php";
-        } else {
+        if (!isset($_SESSION["loggedIn"]) || $_SESSION["loggedIn"] === false) {
             include "header-modules/user-options-not-logged-in.php";
+        } else {
+            include "header-modules/user-options-logged-in.php";
         }
         ?>
     </div>

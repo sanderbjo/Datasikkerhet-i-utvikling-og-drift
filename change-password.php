@@ -1,14 +1,15 @@
 <?php
 require "includes/validate.php";
-require "includes/db-connection.php";
 
-$fullName = "NAME";
+$name = $_SESSION["name"];
 $minimumPasswordLength = 1;
 
 $wrongPassword = "Passordet er feil";
 $passwordCantBeNull = "Passordet kan ikke være blankt";
 $passwordConfirmationFail = "Passordet matcher ikke";
 $passwordTooShort = "Passordet er for kort. Minst $minimumPasswordLength tegn";
+
+$passwordChangeSuccess = "Passordet har blitt oppdatert";
 
 $oldPasswordError = $newPasswordError = $newPasswordConfirmationError = "";
 $oldPassword = $newPassword = $newPasswordConfirmation = "";
@@ -32,11 +33,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $newPasswordConfirmationError = $passwordConfirmationFail;
         }
     }
-
 }
-
-# TODO: Sjekk at gammelt passord matcher. Og at nytt passord matcher med bekreftene passord
+if (empty($oldPasswordError) && empty($newPasswordError) && empty($newPasswordConfirmationError)) {
+    require "includes/db-connection.php";
+}
+# TODO: Sjekk at gammelt passord matcher
 # TODO: Deretter oppdater passord og gi tilbakemelding til bruker
+$message = $passwordChangeSuccess
 ?>
 
 <!DOCTYPE html>
@@ -56,8 +59,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <main>
     <div class="module-wrapper">
         <div class="change-password-module">
-            <h2 class="module-header">Bytt passord for <?php echo $fullName ?></h2>
+            <h2 class="module-header">Bytt passord for <?php echo $name ?></h2>
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" class="change-password-form">
+                <?php if (!empty($message)) echo "<div class='success center'><p>$message</p></div>" ?>
                 <div class="change-password-form-old-password">
                     <label for="old-password">Gammelt passord</label>
                     <input type="password" name="old-password" id="old-password">

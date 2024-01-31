@@ -1,6 +1,12 @@
 <?php
 session_start();
 
+if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
+    header("Location: index.php");
+    exit();
+}
+$_SESSION["loggedIn"] = false;
+
 $wrongEmailOrPassword = "Feil e-post eller passord";
 
 $loginError = "";
@@ -22,24 +28,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (empty($loginError)) {
         require "includes/db-connection.php";
-        $stmt = $conn->prepare("SELECT 'id', 'epost', 'passord' 'bruker' " .
-                               "WHERE 'epost' = ?");
+        $stmt = $conn->prepare("SELECT 'id', 'epost', 'passord', 'navn' FROM 'bruker' WHERE 'epost' = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
         $conn->close();
         if ($stmt->num_rows === 1) {
             $resultId = -1;
-            $resultEmail = $resultPassword = "";
-            $stmt->bind_result($resultId, $resultEmail, $resultPassword);
+            $resultEmail = $resultPassword = $resultName = "";
+            $stmt->bind_result($resultId, $resultEmail, $resultPassword, $resultName);
             if ($resultPassword === $password) {
-                $_SESSION["user"] = $resultId;
+                $_SESSION["id"] = $resultId;
                 $_SESSION["loggedIn"] = true;
+                $_SESSION["email"] = $resultEmail;
+                $_SESSION["name"] =$resultName;
                 header("Location: index.php");
                 exit;
             } else {
                 $loginError = $wrongEmailOrPassword;
             }
+        } else {
+            $loginError = $wrongEmailOrPassword;
         }
     }
 }
