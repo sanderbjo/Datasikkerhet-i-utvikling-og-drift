@@ -89,6 +89,11 @@ header button:hover {
     font-weight: bold;
 }
 
+.success {
+    color: lawngreen;
+    font-weight: bold;
+}
+
 form div .error {
     position: absolute;
     left: calc(100% + 1rem);

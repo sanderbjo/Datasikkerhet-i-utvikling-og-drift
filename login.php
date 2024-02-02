@@ -1,5 +1,4 @@
 <?php
-require "includes/db-connection.php"; 
 session_start();
 
 if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
@@ -22,27 +21,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $email = $_POST["email"];
         $email = trim($email);
         $email = htmlspecialchars($email);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $loginError = $wrongEmailOrPassword;
-        }
+        # Hvis ikke signup.php bruker filter blir det feil å bruke filter her
+        #if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        #    $loginError = $wrongEmailOrPassword;
+        #}
     }
 
     if (empty($loginError)) {
         require "includes/db-connection.php";
-        $stmt = $conn->prepare("SELECT 'id', 'epost', 'passord', 'navn' FROM 'bruker' WHERE 'epost' = ?");
+        $stmt = $conn->prepare("SELECT 'id', 'epost', 'passord', 'navn' 'rolle_id' FROM 'bruker' WHERE 'epost' = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-        $conn->close();
         if ($stmt->num_rows === 1) {
-            $resultId = -1;
+            $resultId = $resultRoleId = -1;
             $resultEmail = $resultPassword = $resultName = "";
-            $stmt->bind_result($resultId, $resultEmail, $resultPassword, $resultName);
-            if ($resultPassword === $password) {
+            $stmt->bind_result($resultId, $resultEmail, $resultPassword, $resultName, $resultRoleId);
+            if (strcmp($resultPassword, $password) === 0) {
+                $resultRole = "";
+                $stmt->bind_result($resultRole);
                 $_SESSION["id"] = $resultId;
                 $_SESSION["loggedIn"] = true;
                 $_SESSION["email"] = $resultEmail;
-                $_SESSION["name"] =$resultName;
+                $_SESSION["name"] = $resultName;
+                $_SESSION["role"] = $resultRole;
                 header("Location: index.php");
                 exit;
             } else {
@@ -68,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
 
 <?php
-include "modules/header.php";
+require_once "modules/header.php";
 ?>
 
 <main>

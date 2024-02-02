@@ -9,7 +9,8 @@ $passwordCantBeNull = "Passordet kan ikke være blankt";
 $passwordConfirmationFail = "Passordet matcher ikke";
 $passwordTooShort = "Passordet er for kort. Minst $minimumPasswordLength tegn";
 
-$passwordChangeSuccess = "Passordet har blitt oppdatert";
+$passwordChangeSuccess = "<div class='success center'><p>Passordet har blitt oppdatert</p></div>";
+$databaseError = "<div class='error center'><p>Feil i database</p></div>";
 
 $oldPasswordError = $newPasswordError = $newPasswordConfirmationError = "";
 $oldPassword = $newPassword = $newPasswordConfirmation = "";
@@ -29,17 +30,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $newPasswordConfirmation = $_POST["new-password-confirmation"];
         if (strlen($newPassword) < $minimumPasswordLength) {
             $newPasswordError = $passwordTooShort;
-        } elseif (strcmp($newPassword, $newPasswordConfirmation) != 0) {
+        } elseif (strcmp($newPassword, $newPasswordConfirmation) !== 0) {
             $newPasswordConfirmationError = $passwordConfirmationFail;
         }
     }
+    if (empty($oldPasswordError) && empty($newPasswordError) && empty($newPasswordConfirmationError)) {
+        require "includes/db-connection.php";
+        $id = $_SESSION["id"];
+        $stmt = $conn->prepare("SELECT 'passord' FROM 'bruker' WHERE 'id' = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows === 1) {
+            $resultPassword ="";
+            $stmt->bind_result($resultPassword);
+            if (strcmp($resultPassword, $oldPassword) === 0) {
+                $stmt2 = $conn->prepare("UPDATE 'bruker' SET 'passord'=? WHERE 'id'=?");
+                $stmt2->bind_param("si", $newPassword, $id);
+                $stmt->execute();
+
+                $message = $passwordChangeSuccess;
+            } else {
+                $oldPasswordError = $wrongPassword;
+            }
+        } else {
+            $message = $databaseError;
+        }
+    }
 }
-if (empty($oldPasswordError) && empty($newPasswordError) && empty($newPasswordConfirmationError)) {
-    require "includes/db-connection.php";
-}
-# TODO: Sjekk at gammelt passord matcher
-# TODO: Deretter oppdater passord og gi tilbakemelding til bruker
-$message = $passwordChangeSuccess
 ?>
 
 <!DOCTYPE html>
@@ -54,14 +72,14 @@ $message = $passwordChangeSuccess
 
 <body>
 
-<?php include "modules/header.php" ?>
+<?php require_once "modules/header.php" ?>
 
 <main>
     <div class="module-wrapper">
         <div class="change-password-module">
             <h2 class="module-header">Bytt passord for <?php echo $name ?></h2>
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" class="change-password-form">
-                <?php if (!empty($message)) echo "<div class='success center'><p>$message</p></div>" ?>
+                <?php if (!empty($message)) echo $message ?>
                 <div class="change-password-form-old-password">
                     <label for="old-password">Gammelt passord</label>
                     <input type="password" name="old-password" id="old-password">

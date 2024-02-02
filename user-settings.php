@@ -14,7 +14,7 @@ require "includes/validate.php";
 
 <body>
 
-<?php include "modules/header.php" ?>
+<?php require_once "modules/header.php" ?>
 
 <main>
     <div class="wrapper">
