@@ -1,8 +1,6 @@
 <?php
 // Definer databaseforbindelsesdetaljer
-// TODO: Opprett en uploads mappe samme sted som denne, evt endre path.
 require "includes/db-connection.php"; 
-
 
 // Håndter registreringsskjemaet
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -11,12 +9,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $subjectName = $_POST['subject_name'];
     $subjectCode = $_POST['subject_code'];
+    $pinCode = $_POST['pin_code'];
 
     // Enkel validering
-    if (empty($name) || empty($email) || empty($password) || empty($subjectName) || empty($subjectCode)) {
+    if (empty($name) || empty($email) || empty($password) || empty($subjectName) || empty($subjectCode) || empty($pinCode)) {
         echo "Fyll ut alle feltene.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "Ugyldig e-postadresse.";
+    } elseif (!is_numeric($pinCode) || strlen($pinCode) !== 4) {
+        echo "Ugyldig PIN-kode. Den må være et 4-sifret tall.";
     } else {
         // Opplasting av bilde til webserveren
         $targetDir = "uploads/";
@@ -44,12 +45,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "Bildet " . basename($_FILES["image"]["name"]) . " har blitt lastet opp.";
                 // Legg til foreleser i databasen
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                $sql = "INSERT INTO lecturers (name, email, password, image_path, subject_name, subject_code) VALUES ('$name', '$email', '$hashedPassword', '$targetFile', '$subjectName', '$subjectCode')";
+                $sqlInsertLecturer = "INSERT INTO bruker (navn, epost, passord, rolle_id, bilde) VALUES ('$name', '$email', '$hashedPassword', 1, '$targetFile')";
 
-                if ($conn->query($sql) === TRUE) {
-                    echo "Registrering vellykket!";
+                if ($conn->query($sqlInsertLecturer) === TRUE) {
+                    echo "Foreleserregistrering vellykket!";
+
+                    // Hent IDen til den nyregistrerte foreleseren
+                    $lecturerId = $conn->insert_id;
+
+                    // Legg til emne i databasen
+                    $sqlInsertSubject = "INSERT INTO emne (bruker_id, emnekode, navn, pin) VALUES ($lecturerId, '$subjectCode', '$subjectName', '$pinCode')";
+
+                    if ($conn->query($sqlInsertSubject) === TRUE) {
+                        echo "Emneregistrering vellykket!";
+                    } else {
+                        echo "Feil under emneregistrering: " . $conn->error;
+                    }
                 } else {
-                    echo "Feil under registrering: " . $conn->error;
+                    echo "Feil under foreleserregistrering: " . $conn->error;
                 }
             } else {
                 echo "Beklager, det oppstod en feil ved opplasting av bildet.";
@@ -79,7 +92,8 @@ $conn->close();
         Passord: <input type="password" name="password"><br>
         Bilde: <input type="file" name="image"><br>
         Emnenavn: <input type="text" name="subject_name"><br>
-        Emnepinkode: <input type="text" name="subject_code"><br>
+        Emnekode: <input type="text" name="subject_code"><br>
+        Emnepinkode: <input type="text" name="pin_code" maxlength="4"><br>
         <input type="submit" value="Registrer">
     </form>
 
