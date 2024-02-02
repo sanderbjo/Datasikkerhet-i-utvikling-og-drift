@@ -1,18 +1,8 @@
 <?php
 // Definer databaseforbindelsesdetaljer
 // TODO: Opprett en uploads mappe samme sted som denne, evt endre path.
-$servername = "din_database_server";
-$username = "din_database_bruker";
-$password = "din_database_passord";
-$dbname = "din_database_navn";
+require "includes/db-connection.php"; 
 
-// Opprett tilkobling til databasen
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Sjekk tilkoblingsstatus
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 // Håndter registreringsskjemaet
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
