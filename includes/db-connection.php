@@ -2,10 +2,10 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-$dbHostname = "";
-$dbUsername = "";
-$dbPassword = "";
-$dbName = "";
+$dbHostname = "localhost";
+$dbUsername = "gruppe4";
+$dbPassword = "pass4";
+$dbName = "dsiku";
 
 $conn = new mysqli($dbHostname, $dbUsername, $dbPassword, $dbName);
 

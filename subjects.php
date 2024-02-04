@@ -2,7 +2,7 @@
 include "includes/validate.php";
 
 /* Foreløpig eksempelkode, skal endres i forhold til databasen
-include "db-connection.php";
+include "includes/db-connection.php";
 // Sjekk om emnekode er angitt i URL
 if (isset($_GET['emnekode'])) {
     $emnekode = htmlspecialchars($_GET['emnekode']);
