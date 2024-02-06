@@ -16,23 +16,22 @@ $oldPasswordError = $newPasswordError = $newPasswordConfirmationError = "";
 $oldPassword = $newPassword = $newPasswordConfirmation = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (empty($_POST["old-password"])) {
+    if (empty($_POST["old-password"]))
         $oldPasswordError = $wrongPassword;
-    } else {
+    else
         $oldPassword = $_POST["old-password"];
-    }
-    if (empty($_POST["new-password"])) {
+
+    if (empty($_POST["new-password"]))
         $newPasswordError = $passwordCantBeNull;
-    } elseif (empty($_POST["new-password-confirmation"])) {
+    elseif (empty($_POST["new-password-confirmation"]))
         $newPasswordConfirmationError = $passwordConfirmationFail;
-    } else {
+    else {
         $newPassword = $_POST["new-password"];
         $newPasswordConfirmation = $_POST["new-password-confirmation"];
-        if (strlen($newPassword) < $minimumPasswordLength) {
+        if (strlen($newPassword) < $minimumPasswordLength)
             $newPasswordError = $passwordTooShort;
-        } elseif (strcmp($newPassword, $newPasswordConfirmation) !== 0) {
+        elseif (strcmp($newPassword, $newPasswordConfirmation) !== 0)
             $newPasswordConfirmationError = $passwordConfirmationFail;
-        }
     }
     if (empty($oldPasswordError) && empty($newPasswordError) && empty($newPasswordConfirmationError)) {
         require "includes/db-connection.php";

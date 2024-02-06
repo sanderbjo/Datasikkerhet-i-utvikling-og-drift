@@ -13,18 +13,16 @@ $loginError = "";
 $email = $password = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (empty($_POST["email"])) {
+    if (empty($_POST["email"]) || empty($_POST["password"]))
         $loginError = $wrongEmailOrPassword;
-    } elseif (empty($_POST["password"])) {
-        $loginError = $wrongEmailOrPassword;
-    } else {
+    else {
         $email = $_POST["email"];
+        $password = $_POST["password"];
+
         $email = trim($email);
         $email = htmlspecialchars($email);
-        # Hvis ikke signup.php bruker filter blir det feil å bruke filter her
-        #if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        #    $loginError = $wrongEmailOrPassword;
-        #}
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+            $loginError = $wrongEmailOrPassword;
     }
 
     if (empty($loginError)) {
@@ -35,10 +33,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $stmt->store_result();
         if ($stmt->num_rows === 1) {
             $resultId = $resultRoleId = -1;
-            $resultEmail = $resultPassword = $resultName = "";
+            $resultEmail = $resultPassword = $resultName = $resultRole = "";
             $stmt->bind_result($resultId, $resultEmail, $resultPassword, $resultName, $resultRoleId);
             if (strcmp($resultPassword, $password) === 0) {
-                $resultRole = "";
                 $stmt->bind_result($resultRole);
                 $_SESSION["id"] = $resultId;
                 $_SESSION["loggedIn"] = true;
