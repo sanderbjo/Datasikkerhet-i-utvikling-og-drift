@@ -2,8 +2,11 @@
 session_start();
 
 if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
-    header("Location: index.php");
-    exit();
+    if ($_SESSION["role"] === 1)
+        header("Location: foreleser.php");
+    else
+        header("Location: student.php");
+    exit;
 }
 $_SESSION["loggedIn"] = false;
 
@@ -13,36 +16,37 @@ $loginError = "";
 $email = $password = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (empty($_POST["email"])) {
+    if (empty($_POST["email"]) || empty($_POST["password"]))
         $loginError = $wrongEmailOrPassword;
-    } elseif (empty($_POST["password"])) {
-        $loginError = $wrongEmailOrPassword;
-    } else {
+    else {
         $email = $_POST["email"];
+        $password = $_POST["password"];
+
         $email = trim($email);
-        $email = htmlspecialchars($email);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL))
             $loginError = $wrongEmailOrPassword;
-        }
     }
 
     if (empty($loginError)) {
         require "includes/db-connection.php";
-        $stmt = $conn->prepare("SELECT 'id', 'epost', 'passord', 'navn' FROM 'bruker' WHERE 'epost' = ?");
+        $stmt = $conn->prepare("SELECT 'id', 'epost', 'passord', 'navn' 'rolle_id' FROM 'bruker' WHERE 'epost' = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
-        $conn->close();
         if ($stmt->num_rows === 1) {
-            $resultId = -1;
-            $resultEmail = $resultPassword = $resultName = "";
-            $stmt->bind_result($resultId, $resultEmail, $resultPassword, $resultName);
-            if ($resultPassword === $password) {
+            $resultId = $resultRoleId = -1;
+            $resultEmail = $resultPassword = $resultName = $resultRole = "";
+            $stmt->bind_result($resultId, $resultEmail, $resultPassword, $resultName, $resultRoleId);
+            if (strcmp($resultPassword, $password) === 0) {
                 $_SESSION["id"] = $resultId;
                 $_SESSION["loggedIn"] = true;
                 $_SESSION["email"] = $resultEmail;
-                $_SESSION["name"] =$resultName;
-                header("Location: index.php");
+                $_SESSION["name"] = $resultName;
+                $_SESSION["role"] = $resultRoleId;
+                if ($_SESSION["role"] === 1)
+                    header("Location: foreleser.php");
+                else
+                    header("Location: student.php");
                 exit;
             } else {
                 $loginError = $wrongEmailOrPassword;
@@ -67,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
 
 <?php
-include "modules/header.php";
+require_once "modules/header.php";
 ?>
 
 <main>
@@ -78,7 +82,7 @@ include "modules/header.php";
                 <?php if (!empty($loginError)) echo "<div class='error center'><p>$loginError</p></div>" ?>
                 <div class="login-form-email">
                     <label for="email">E-post</label>
-                    <input type="email" name="email" id="email" value="<?php echo $email;?>">
+                    <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($email);?>">
                 </div>
                 <div class="login-form-password">
                     <label for="password">Passord</label>
@@ -94,8 +98,8 @@ include "modules/header.php";
                     <p><a href="/anon-login.php">Anonym innlogging med kode</a></p>
                 </div>
                 <div class="login-option-signup center">
-                    <p><a href="/signup.php">Opprett en konto</a>
-                    </p>
+                    <p><a href="/register-student.php">Opprett en studentkonto</a></p>
+                    <p><a href="/register-lecturer.php">Opprett en foreleserkonto</a></p>
                 </div>
             </div>
         </div>

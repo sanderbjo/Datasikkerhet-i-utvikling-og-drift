@@ -3,7 +3,7 @@
 # bruker som ikke er logget inn ikke skal ha tilgang til
 session_start();
 
-if (!isset($_SESSION["loggedIn"]) || $_SESSION["loggedIn"] === false) {
+if (!isset($_SESSION["loggedIn"]) || $_SESSION["loggedIn"] !== true) {
     header("Location: login.php");
     exit;
 }

@@ -2,12 +2,6 @@
 // Definer databaseforbindelsesdetaljer
 require "includes/db-connection.php"; 
 
-
-// Sjekk tilkoblingsstatus
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 // Håndter registreringsskjemaet
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
@@ -19,17 +13,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Fyll ut alle feltene.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "Ugyldig e-postadresse.";
-    } elseif (strlen($password) < 6) {
-        echo "Passordet må være minst 6 tegn langt.";
     } else {
-        // Legg til brukeren i databasen
+        // Legg til student i databasen
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-        $sql = "INSERT INTO users (name, email, password) VALUES ('$name', '$email', '$hashedPassword')";
+        $sqlInsertStudent = "INSERT INTO bruker (navn, epost, passord, rolle_id) VALUES ('$name', '$email', '$hashedPassword', 2)";
 
-        if ($conn->query($sql) === TRUE) {
-            echo "Registrering vellykket!";
+        if ($conn->query($sqlInsertStudent) === TRUE) {
+            echo "Studentregistrering vellykket!";
         } else {
-            echo "Feil under registrering: " . $conn->error;
+            echo "Feil under registrering av student: " . $conn->error;
         }
     }
 }
@@ -43,11 +35,11 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registreringsskjema</title>
+    <title>Studentregistrering</title>
 </head>
 <body>
 
-    <h2>Registreringsskjema</h2>
+    <h2>Studentregistrering</h2>
 
     <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
         Navn: <input type="text" name="name"><br>
