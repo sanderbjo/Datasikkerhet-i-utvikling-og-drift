@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $resultId = $resultRoleId = -1;
             $resultEmail = $resultPassword = $resultName = $resultRole = "";
             $stmt->bind_result($resultId, $resultEmail, $resultPassword, $resultName, $resultRoleId);
-            if (strcmp($resultPassword, $password) === 0) {
+            if (password_verify($password, $resultPassword)) {
                 $_SESSION["id"] = $resultId;
                 $_SESSION["loggedIn"] = true;
                 $_SESSION["email"] = $resultEmail;
