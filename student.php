@@ -1,3 +1,6 @@
+<?php
+require_once "includes/validate.php";
+?>
 <!DOCTYPE html>
 <html lang="nb">
 
