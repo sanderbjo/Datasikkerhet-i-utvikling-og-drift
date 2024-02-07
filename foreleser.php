@@ -38,7 +38,7 @@
            <input type='hidden' name='bruker_id' value='".$id."'>
            <input type='hidden' name='emnekode' value='".$row["emne_emnekode"]."'>
            <input type='hidden' name='id' value='".$row["id"]."'>
-           <input type='submit'>
+           <input type='submit' value='Send inn ditt svar!'>
            </form>";
        }
    } else {
@@ -46,7 +46,7 @@
    }
    $conn->close();
    ?>
-?>
+
 
 </body>
 </html>

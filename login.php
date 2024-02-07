@@ -93,7 +93,8 @@ require_once "modules/header.php";
                     <p><a href="/anon-login.php">Anonym innlogging med kode</a></p>
                 </div>
                 <div class="login-option-signup center">
-                    <p><a href="/signup.php">Opprett en konto</a>
+                    <p><a href="/register-student.php">Opprett studentkonto</a>
+                    <p><a href="/register-lecturer.php">Opprett foreleserkonto</a></p>
                     </p>
                 </div>
             </div>
