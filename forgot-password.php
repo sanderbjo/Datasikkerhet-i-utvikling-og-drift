@@ -1,5 +1,5 @@
 <?php
-require "includes/db-connection.php"; // Koble til databasen
+require "includes/db-connection.php";
 
 $email = $emailError = "";
 
@@ -18,22 +18,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $user_id = $user_info['id'];
 
             // Generer en unik token for tilbakestilling
-            $reset_token = bin2hex(random_bytes(32));
-            $expiry_time = date('Y-m-d H:i:s', strtotime('+1 hour'));
+            $reset_token = bin2hex(random_bytes(10));
 
-            // Lagre token i databasen sammen med foreleserens e-post og tidspunkt for forespørsel
-            $reset_insert_query = "INSERT INTO foreleser_reset_tokens (user_id, token, expiry_time) VALUES ('$user_id', '$reset_token', '$expiry_time')";
-            $reset_insert_result = mysqli_query($conn, $reset_insert_query);
+            // Oppdater brukerens passord til den den tilfeldige koden
+            $update_password_query = "UPDATE bruker SET passord = '$random_token' WHERE id = '$user_id'";
+            $update_password_result = mysqli_query($conn, $update_password_query);
 
             if ($reset_insert_result) {
-                // Send e-post med tilbakestillingsslenke
-                $reset_link = "http://158.39.188.206//reset_password.php?token=$reset_token";
-                $subject = "Tilbakestill Passord";
-                $message = "Klikk på følgende lenke for å tilbakestille passordet ditt: $reset_link";
+                // Send e-post med tilfeldig generert passord
+                $subject = "Temporary Password";
+                $message = "Dit midlertidige passord er: $random_token, husk å endre passord etter du har logget deg inn!";
                 mail($email, $subject, $message);
 
                 // Gi tilbakemelding til foreleseren
-                $success_message = "En e-post med instruksjoner for tilbakestilling er sendt til $email.";
+                $success_message = "En e-post med instruksjoner er sendt til $email.";
             } else {
                 // Håndter feil ved lagring av tilbakestillingsforespørsel i databasen
                 $error_message = "Feil ved behandling av forespørsel. Prøv igjen senere.";
@@ -53,7 +51,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glemt Passord (Foreleser)</title>
-    <!-- Legg til eventuelle CSS-stiler her -->
 </head>
 
 <body>
@@ -70,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <?php if (!empty($emailError)) echo "<p class='error'>$emailError</p>" ?>
             </div>
             <div class="form-submit">
-                <button type="submit">Send Tilbakestillingslenke</button>
+                <button type="submit">Klikk for å få midlertidig passord </button>
             </div>
         </form>
         <?php

@@ -25,13 +25,13 @@ if (isset($_GET['emnekode'])) {
     
 }
 
-    // Check if the form for submitting messages is submitted
+    // Sjekk om formen for å legge ut melding er utfylt
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['melding_innhold'])) {
-    // Sanitize and validate the input data
+    // Valider inputdataen
     $melding_innhold = mysqli_real_escape_string($conn, $_POST['melding_innhold']);
 
-    // Insert the anonymous message into the database
-    $insert_query = "INSERT INTO melding (innhold, bruker_id, emne_emnekode) VALUES ('$melding_innhold', NULL, NULL)";
+    // Legg til meldingen i databasen
+    $insert_query = "INSERT INTO melding (innhold, bruker_id, emne_emnekode) VALUES ('$melding_innhold', NULL, '$emnekode')";
     $insert_result = mysqli_query($conn, $insert_query);
 
     if (!$insert_result) {
@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['melding_innhold'])) {
 }
 
 // Hent alle meldinger og svar for emnet fra databasen
-$query_meldinger = "SELECT id, innhold, opprettet_tid FROM melding WHERE bruker_id IS NULL AND emne_emnekode IS NULL";
+$query_meldinger = "SELECT id, innhold FROM melding WHERE bruker_id IS NULL";
 $result_meldinger = mysqli_query($conn, $query_meldinger);
 
 if ($result_meldinger && mysqli_num_rows($result_meldinger) > 0) {
