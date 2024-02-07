@@ -8,6 +8,6 @@ if (!isset($_SESSION["loggedIn"]) || $_SESSION["loggedIn"] !== true) {
 
 # Sender deg til forsiden hvis du er student
 if ($_SESSION["role"] === 2) {
-    header("Location: index.php");
+    header("Location: student.php");
     exit;
 }

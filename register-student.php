@@ -39,6 +39,9 @@ $conn->close();
 </head>
 <body>
 
+<?php
+require_once "modules/header.php"
+?>
     <h2>Studentregistrering</h2>
 
     <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
