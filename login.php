@@ -2,8 +2,11 @@
 session_start();
 
 if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
-    header("Location: index.php");
-    exit();
+    if ($_SESSION["role"] === 1)
+        header("Location: foreleser.php");
+    else
+        header("Location: student.php");
+    exit;
 }
 $_SESSION["loggedIn"] = false;
 
@@ -35,13 +38,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $resultEmail = $resultPassword = $resultName = $resultRole = "";
             $stmt->bind_result($resultId, $resultEmail, $resultPassword, $resultName, $resultRoleId);
             if (strcmp($resultPassword, $password) === 0) {
-                $stmt->bind_result($resultRole);
                 $_SESSION["id"] = $resultId;
                 $_SESSION["loggedIn"] = true;
                 $_SESSION["email"] = $resultEmail;
                 $_SESSION["name"] = $resultName;
-                $_SESSION["role"] = $resultRole;
-                header("Location: index.php");
+                $_SESSION["role"] = $resultRoleId;
+                if ($_SESSION["role"] === 1)
+                    header("Location: foreleser.php");
+                else
+                    header("Location: student.php");
                 exit;
             } else {
                 $loginError = $wrongEmailOrPassword;
