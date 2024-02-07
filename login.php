@@ -20,7 +20,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $password = $_POST["password"];
 
         $email = trim($email);
-        $email = htmlspecialchars($email);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL))
             $loginError = $wrongEmailOrPassword;
     }
@@ -78,7 +77,7 @@ require_once "modules/header.php";
                 <?php if (!empty($loginError)) echo "<div class='error center'><p>$loginError</p></div>" ?>
                 <div class="login-form-email">
                     <label for="email">E-post</label>
-                    <input type="email" name="email" id="email" value="<?php echo $email;?>">
+                    <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($email);?>">
                 </div>
                 <div class="login-form-password">
                     <label for="password">Passord</label>
@@ -94,8 +93,8 @@ require_once "modules/header.php";
                     <p><a href="/anon-login.php">Anonym innlogging med kode</a></p>
                 </div>
                 <div class="login-option-signup center">
-                    <p><a href="/signup.php">Opprett en konto</a>
-                    </p>
+                    <p><a href="/register-student.php">Opprett en studentkonto</a></p>
+                    <p><a href="/register-lecturer.php">Opprett en foreleserkonto</a></p>
                 </div>
             </div>
         </div>
