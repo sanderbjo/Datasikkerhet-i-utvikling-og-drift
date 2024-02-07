@@ -16,20 +16,25 @@ $loginError = "";
 $email = $password = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (empty($_POST["email"]) || empty($_POST["password"]))
+    echo "Inne i POST-blokk<br>";
+
+    if (empty($_POST["email"]) || empty($_POST["password"])) {
         $loginError = $wrongEmailOrPassword;
-    else {
+        echo "Tom e-post eller passord<br>";
+    } else {
         $email = $_POST["email"];
         $password = $_POST["password"];
 
         $email = trim($email);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL))
             $loginError = $wrongEmailOrPassword;
+            echo "Ugyldig e-postadresse<br>";
+        }
     }
 
     if (empty($loginError)) {
         require "includes/db-connection.php";
-        $stmt = $conn->prepare("SELECT 'id', 'epost', 'passord', 'navn' 'rolle_id' FROM 'bruker' WHERE 'epost' = ?");
+        $stmt = $conn->prepare("SELECT id, epost, passord, navn, rolle_id FROM bruker WHERE epost = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
@@ -50,13 +55,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 exit;
             } else {
                 $loginError = $wrongEmailOrPassword;
+                echo "Feil passord<br>";
+
             }
         } else {
             $loginError = $wrongEmailOrPassword;
+
         }
     }
 }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="nb">
