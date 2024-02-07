@@ -21,5 +21,8 @@ Epost til bruker.
 ## name (string)
 Navnet til bruker.
 
-## role (?) TODO: Skal role være rolekey (1/2) eller "elev"/"professor"?
+## role (int)
 Rolle på bruker.
+
+- 1 = Foreleser
+- 2 = Elev

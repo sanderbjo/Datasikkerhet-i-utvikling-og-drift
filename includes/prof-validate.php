@@ -6,8 +6,8 @@ if (!isset($_SESSION["loggedIn"]) || $_SESSION["loggedIn"] !== true) {
     exit;
 }
 
-# TODO: ???
-if (strcmp($_SESSION["role"], "professor") !== 0) {
+# Sender deg til forsiden hvis du er student
+if ($_SESSION["role"] === 2) {
     header("Location: index.php");
     exit;
 }
