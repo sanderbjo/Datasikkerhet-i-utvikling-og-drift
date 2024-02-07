@@ -10,7 +10,8 @@ $passwordConfirmationFail = "Passordet matcher ikke";
 $passwordTooShort = "Passordet er for kort. Minst $minimumPasswordLength tegn";
 
 $passwordChangeSuccess = "<div class='success center'><p>Passordet har blitt oppdatert</p></div>";
-$databaseError = "<div class='error center'><p>Feil i database</p></div>";
+$databaseError0 = "<div class='error center'><p>Feil i database #0</p></div>";
+$databaseError1 = "<div class='error center'><p>Feil i database #1</p></div>";
 
 $oldPasswordError = $newPasswordError = $newPasswordConfirmationError = "";
 $oldPassword = $newPassword = $newPasswordConfirmation = "";
@@ -36,24 +37,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($oldPasswordError) && empty($newPasswordError) && empty($newPasswordConfirmationError)) {
         require "includes/db-connection.php";
         $id = $_SESSION["id"];
-        $stmt = $conn->prepare("SELECT 'passord' FROM 'bruker' WHERE 'id' = ?");
+        $stmt = $conn->prepare("SELECT passord FROM bruker WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $stmt->store_result();
         if ($stmt->num_rows === 1) {
             $resultPassword ="";
             $stmt->bind_result($resultPassword);
-            if (strcmp($resultPassword, $oldPassword) === 0) {
-                $stmt2 = $conn->prepare("UPDATE 'bruker' SET 'passord'=? WHERE 'id'=?");
-                $stmt2->bind_param("si", $newPassword, $id);
-                $stmt->execute();
+            $stmt->fetch();
+            if (password_verify($oldPassword, $resultPassword)) {
+                $newPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-                $message = $passwordChangeSuccess;
+                $stmtUpdatePassword = $conn->prepare("UPDATE bruker SET passord = ? WHERE id = ?");
+                $stmtUpdatePassword->bind_param("si", $newPassword, $id);
+                $stmtUpdatePassword->execute();
+                if ($stmtUpdatePassword->affected_rows === 1)
+                    $message = $passwordChangeSuccess;
+                elseif($stmtUpdatePassword->affected_rows === -1)
+                    $message = $databaseError1;
+                else
+                    $message = $databaseError0;
+
             } else {
                 $oldPasswordError = $wrongPassword;
             }
         } else {
-            $message = $databaseError;
+            $message = $databaseError0;
         }
     }
 }
@@ -100,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </form>
             <div class="change-password-other-options center">
                 <div class="login-option-code">
-                    <p><a href="/forgot-password">Glemt Passord?</a></p>
+                    <p><a href="/forgot-password.php">Glemt Passord?</a></p>
                 </div>
             </div>
         </div>
