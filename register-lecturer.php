@@ -119,7 +119,8 @@ require_once "modules/header.php";
                 </div>
                 <div class="register-form-subject-pin">
                     <label for="subject-pin">Emnepinkode</label>
-                    <input type="text" name="pin_code" maxlength="4" id="subject-pin">
+                    <input type="text" name="pin_code" id="subject-pin" inputmode="numeric"
+                           minlength="4" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                 </div>
                 <div class="form-submit">
                     <button>Registrer</button>

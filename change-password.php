@@ -1,40 +1,40 @@
 <?php
 require "includes/validate.php";
 
-$name = $_SESSION["name"];
+$name = htmlspecialchars($_SESSION["name"]);
+
 $minimumPasswordLength = 1;
 
-$wrongPassword = "Passordet er feil";
-$passwordCantBeNull = "Passordet kan ikke være blankt";
-$passwordConfirmationFail = "Passordet matcher ikke";
-$passwordTooShort = "Passordet er for kort. Minst $minimumPasswordLength tegn";
-
-$passwordChangeSuccess = "<p class='success'>Passordet har blitt oppdatert</p>";
+$formNotFilled = "<p class='error'>Alle feltene må være fylt ut</p>";
+$passwordTooShort = "<p class='error'>Nytt passord er for kort. Minst $minimumPasswordLength tegn</p>";
+$passwordConfirmationFail = "<p class='error'>Nytt Passord matcher ikke med bekreftende passord</p>";
+$wrongPassword = "<p class='error'>Gammelt passord er feil</p>";
 $databaseError0 = "<p class='error'>Feil i database #0</p>";
 $databaseError1 = "<p class='error'>Feil i database #1</p>";
 
-$oldPasswordError = $newPasswordError = $newPasswordConfirmationError = "";
+$passwordChangeSuccess = "<p class='success'>Passordet har blitt oppdatert</p>";
+
+$message = "";
+
 $oldPassword = $newPassword = $newPasswordConfirmation = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (empty($_POST["old-password"]))
-        $oldPasswordError = $wrongPassword;
-    else
-        $oldPassword = $_POST["old-password"];
-
-    if (empty($_POST["new-password"]))
-        $newPasswordError = $passwordCantBeNull;
-    elseif (empty($_POST["new-password-confirmation"]))
-        $newPasswordConfirmationError = $passwordConfirmationFail;
+    if (empty($_POST["old-password"]) ||
+        empty($_POST["new-password"]) ||
+        empty($_POST["new-password-confirmation"])
+    )
+        $message = $formNotFilled;
     else {
+        $oldPassword = $_POST["old-password"];
         $newPassword = $_POST["new-password"];
         $newPasswordConfirmation = $_POST["new-password-confirmation"];
+
         if (strlen($newPassword) < $minimumPasswordLength)
-            $newPasswordError = $passwordTooShort;
+            $message = $passwordTooShort;
         elseif (strcmp($newPassword, $newPasswordConfirmation) !== 0)
-            $newPasswordConfirmationError = $passwordConfirmationFail;
+            $message = $passwordConfirmationFail;
     }
-    if (empty($oldPasswordError) && empty($newPasswordError) && empty($newPasswordConfirmationError)) {
+    if (empty($message)) {
         require "includes/db-connection.php";
         $id = $_SESSION["id"];
         $stmt = $conn->prepare("SELECT passord FROM bruker WHERE id = ?");
@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $message = $databaseError0;
 
             } else {
-                $oldPasswordError = $wrongPassword;
+                $message = $wrongPassword;
             }
         } else {
             $message = $databaseError0;
@@ -91,17 +91,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <div class="change-password-form-old-password">
                     <label for="old-password">Gammelt passord</label>
                     <input type="password" name="old-password" id="old-password">
-                    <?php if (!empty($oldPasswordError)) echo "<p class='line-form-error'>$oldPasswordError</p>" ?>
                 </div>
                 <div class="change-password-form-new-password">
                     <label for="new-password">Nytt passord</label>
                     <input type="password" name="new-password" id="new-password">
-                    <?php if (!empty($newPasswordError)) echo "<p class='line-form-error'>$newPasswordError</p>" ?>
                 </div>
                 <div class="change-password-form-new-password">
                     <label for="new-password-confirmation">Bekreft nytt passord</label>
                     <input type="password" name="new-password-confirmation" id="new-password-confirmation">
-                    <?php if (!empty($newPasswordConfirmationError)) echo "<p class='line-form-error'>$newPasswordConfirmationError</p>" ?>
                 </div>
                 <div class="form-submit">
                     <button>Endre passord</button>

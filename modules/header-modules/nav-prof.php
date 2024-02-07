@@ -1,3 +1,1 @@
-<ul>
-    <li><a href="foreleser.php">Forside</a></li>
-</ul>
+<li><a href="foreleser.php">Forside</a></li>

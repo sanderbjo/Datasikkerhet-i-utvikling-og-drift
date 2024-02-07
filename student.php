@@ -16,26 +16,30 @@ require_once "includes/validate.php";
 require_once "modules/header.php"
 ?>
 
-<h1>Student</h1>
-<h2>Velg Emne</h2>
+<main>
+    <div class="wrapper">
+        <section>
+            <h2>Emner</h2>
+            <?php
+            require "includes/db-connection.php";
 
-<?php
-require "includes/db-connection.php";
+            $sql = "SELECT emnekode, navn FROM emne;";
+            $result = $conn->query($sql);
 
-$servername = "158.39.188.206";
-
-$sql = "SELECT emnekode, navn FROM emne;";
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo "<a href='" . $row["emnekode"]. ".php'>" . $row["navn"]. "</a> <br>";
-    }
-} else {
-    echo "0 results";
-}
-$conn->close();
-?>
+            if ($result->num_rows > 0) {
+                echo "<ul>";
+                while ($row = $result->fetch_assoc()) {
+                    echo "<li><a href='" . $row["emnekode"]. ".php'>" . $row["navn"]. "</a></li>";
+                }
+                echo "</ul>";
+            } else {
+                echo "0 results";
+            }
+            $conn->close();
+            ?>
+        </section>
+    </div>
+</main>
 
 </body>
 </html>
