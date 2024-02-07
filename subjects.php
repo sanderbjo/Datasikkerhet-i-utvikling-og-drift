@@ -1,43 +1,57 @@
 <?php
 include "includes/validate.php";
-
-/* Foreløpig eksempelkode, skal endres i forhold til databasen
 include "db-connection.php";
+
 // Sjekk om emnekode er angitt i URL
 if (isset($_GET['emnekode'])) {
     $emnekode = htmlspecialchars($_GET['emnekode']);
 
     // Hent informasjon om emnet fra databasen
-    $query = "SELECT e.navn AS emnenavn, f.navn AS forelesernavn, f.bilde AS foreleserbilde
-              FROM emner e
-              JOIN forelesere f ON e.foreleser_id = f.id
+    $query = "SELECT e.navn AS emnenavn, b.navn AS forelesernavn, b.bruker_id AS foreleser_id, bilde_path AS foreleserbilde
+              FROM emne e
+              JOIN bruker b ON e.bruker_id = b.id
               WHERE e.emnekode = '$emnekode'";
     $result = mysqli_query($conn, $query);
 
     if ($result && mysqli_num_rows($result) > 0) {
         $emneinfo = mysqli_fetch_assoc($result);
+        $foreleserbildePath = $emneinfo['foreleserbilde']; // Path til foreleser bildert
     } else {
         // Håndter feil
         echo "Emnet ble ikke funnet.";
         exit();
     }
+    
+    
+}
 
-    // Hent alle meldinger og svar for emnet fra databasen
-    $query_meldinger = "SELECT m.id, m.melding, m.opprettet_tid
-                        FROM meldinger m
-                        WHERE m.emnekode = '$emnekode'";
-    $result_meldinger = mysqli_query($conn, $query_meldinger);
+    // Check if the form for submitting messages is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['melding_innhold'])) {
+    // Sanitize and validate the input data
+    $melding_innhold = mysqli_real_escape_string($conn, $_POST['melding_innhold']);
 
-    if ($result_meldinger && mysqli_num_rows($result_meldinger) > 0) {
-        $meldinger = mysqli_fetch_all($result_meldinger, MYSQLI_ASSOC);
-    } else {
-        $meldinger = [];
+    // Insert the anonymous message into the database
+    $insert_query = "INSERT INTO melding (innhold, bruker_id, emne_emnekode) VALUES ('$melding_innhold', NULL, NULL)";
+    $insert_result = mysqli_query($conn, $insert_query);
+
+    if (!$insert_result) {
+        // Handle error
+        echo "Feil ved innsending av melding.";
+        exit();
     }
+}
+
+// Hent alle meldinger og svar for emnet fra databasen
+$query_meldinger = "SELECT id, innhold, opprettet_tid FROM melding WHERE bruker_id IS NULL AND emne_emnekode IS NULL";
+$result_meldinger = mysqli_query($conn, $query_meldinger);
+
+if ($result_meldinger && mysqli_num_rows($result_meldinger) > 0) {
+    $meldinger = mysqli_fetch_all($result_meldinger, MYSQLI_ASSOC);
 } else {
-    // Håndter feil
-    echo "Emnekode mangler.";
-    exit();
-}*/
+    $meldinger = [];
+}
+
+
 ?>
 
 <!DOCTYPE html>

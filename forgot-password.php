@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $email = $_POST["email"];
 
         // Sjekk om e-postadressen tilhører en foreleser
-        $check_foreleser_query = "SELECT id FROM brukere WHERE email = '$email' AND rolle = 'foreleser'";
+        $check_foreleser_query = "SELECT id FROM bruker WHERE epost = '$email' AND rolle_id = '1'";
         $check_foreleser_result = mysqli_query($conn, $check_foreleser_query);
 
         if ($check_foreleser_result && mysqli_num_rows($check_foreleser_result) > 0) {
@@ -19,9 +19,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             // Generer en unik token for tilbakestilling
             $reset_token = bin2hex(random_bytes(32));
+            $expiry_time = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
             // Lagre token i databasen sammen med foreleserens e-post og tidspunkt for forespørsel
-            $reset_insert_query = "INSERT INTO foreleser_reset_tokens (user_id, token, opprettet_tid) VALUES ('$user_id', '$reset_token', NOW())";
+            $reset_insert_query = "INSERT INTO foreleser_reset_tokens (user_id, token, expiry_time) VALUES ('$user_id', '$reset_token', '$expiry_time')";
             $reset_insert_result = mysqli_query($conn, $reset_insert_query);
 
             if ($reset_insert_result) {
