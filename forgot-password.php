@@ -1,4 +1,5 @@
 <?php
+require "includes/validate.php";
 require "includes/db-connection.php";
 
 $email = $emailError = "";
