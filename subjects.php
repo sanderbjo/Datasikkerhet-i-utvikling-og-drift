@@ -1,6 +1,8 @@
 <?php
-include "includes/validate.php";
-include "db-connection.php";
+require "includes/validate.php";
+require "includes/db-connection.php";
+
+//TODO: Gjestebrukere skal ha adgang til emner de har 4-sifret kode til
 
 // Sjekk om emnekode er angitt i URL
 if (isset($_GET['emnekode'])) {
