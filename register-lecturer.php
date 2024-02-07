@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Flytt og gi nytt filnavn til bildet
             if (rename($targetFile, $newFilePath)) {
-                echo "Bildet har blitt lastet opp".;
+                echo "Bildet har blitt lastet opp.";
             } else {
                 echo "Feil under flytting av bildet.";
             }

@@ -16,20 +16,15 @@ $loginError = "";
 $email = $password = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    echo "Inne i POST-blokk<br>";
-
-    if (empty($_POST["email"]) || empty($_POST["password"])) {
+    if (empty($_POST["email"]) || empty($_POST["password"]))
         $loginError = $wrongEmailOrPassword;
-        echo "Tom e-post eller passord<br>";
-    } else {
+    else {
         $email = $_POST["email"];
         $password = $_POST["password"];
 
         $email = trim($email);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL))
             $loginError = $wrongEmailOrPassword;
-            echo "Ugyldig e-postadresse<br>";
-        }
     }
 
     if (empty($loginError)) {
@@ -55,14 +50,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 exit;
             } else {
                 $loginError = $wrongEmailOrPassword;
-                echo "Feil passord<br>";
-
             }
         } else {
             $loginError = $wrongEmailOrPassword;
-
         }
     }
+}
 ?>
 
 

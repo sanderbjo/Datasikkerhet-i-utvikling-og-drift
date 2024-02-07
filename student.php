@@ -2,6 +2,10 @@
 <html>
 <body>
 
+<?php
+require_once "modules/header.php"
+?>
+
 <h1>Student</h1>
 <h2>Velg Emne</h2>
 
