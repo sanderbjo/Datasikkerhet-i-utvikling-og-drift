@@ -3,9 +3,9 @@ session_start();
 
 if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
     if ($_SESSION["role"] === 1)
-        header("Location: foreleser.php");
+        header("Location: /foreleser.php");
     else
-        header("Location: student.php");
+        header("Location: /student.php");
     exit;
 }
 $_SESSION["loggedIn"] = false;
@@ -45,9 +45,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $_SESSION["name"] = $resultName;
                 $_SESSION["role"] = $resultRoleId;
                 if ($_SESSION["role"] === 1)
-                    header("Location: foreleser.php");
+                    header("Location: /foreleser.php");
                 else
-                    header("Location: student.php");
+                    header("Location: /student.php");
                 exit;
             } else {
                 $loginError = $wrongEmailOrPassword;

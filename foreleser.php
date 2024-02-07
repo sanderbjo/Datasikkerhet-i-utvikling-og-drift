@@ -1,5 +1,5 @@
 <?php
-require_once "includes/validate.php";
+require_once "includes/prof-validate.php";
 ?>
 
 <!DOCTYPE html>
@@ -8,7 +8,7 @@ require_once "includes/validate.php";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Logg inn</title>
+    <title>Foreleser</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
 

@@ -1,45 +1,63 @@
 <?php
-require "includes/validate.php";
-require "includes/db-connection.php";
+session_start();
 
-$email = $emailError = "";
+$emailCantBeNull = "<p class='error'>Blank epost</p>";
+$invalidEmail = "<p class='error'>Ugyldig epost</p>";
+# Success blir oppdatert med epost senere i koden
+$success = "<p class='success'>Hvis det er en konto knyttet til 'epost' har en mail blitt sendt</p>";
+$databaseError0 = "<p class='error'>Feil i database #0</p>";
+$databaseError1 = "<p class='error'>Feil i database #1</p>";
+
+$message = "";
+$email = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (empty($_POST["email"])) {
-        $emailError = "E-post er påkrevd";
-    } else {
+    if (empty($_POST["email"]))
+        $message = $emailCantBeNull;
+    else {
         $email = $_POST["email"];
+        $email = trim($email);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL))
+            $message = $invalidEmail;
+    }
 
-        // Sjekk om e-postadressen tilhører en foreleser
-        $check_foreleser_query = "SELECT id FROM bruker WHERE epost = '$email' AND rolle_id = '1'";
-        $check_foreleser_result = mysqli_query($conn, $check_foreleser_query);
+    $success = "<p class='success'>Hvis det er en konto knyttet til " . $email . " har en mail blitt sendt</p>";
 
-        if ($check_foreleser_result && mysqli_num_rows($check_foreleser_result) > 0) {
-            $user_info = mysqli_fetch_assoc($check_foreleser_result);
-            $user_id = $user_info['id'];
+    if (empty($message)) {
+        require "includes/db-connection.php";
+        $stmt = $conn->prepare("SELECT id FROM bruker WHERE epost = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows === 1) {
+            $resultId = -1;
+            $stmt->bind_result($resultId);
+            $stmt->fetch();
 
-            // Generer en unik token for tilbakestilling
-            $reset_token = bin2hex(random_bytes(10));
-
-            // Oppdater brukerens passord til den den tilfeldige koden
-            $update_password_query = "UPDATE bruker SET passord = '$random_token' WHERE id = '$user_id'";
-            $update_password_result = mysqli_query($conn, $update_password_query);
-
-            if ($reset_insert_result) {
-                // Send e-post med tilfeldig generert passord
-                $subject = "Temporary Password";
-                $message = "Dit midlertidige passord er: $random_token, husk å endre passord etter du har logget deg inn!";
-                mail($email, $subject, $message);
-
-                // Gi tilbakemelding til foreleseren
-                $success_message = "En e-post med instruksjoner er sendt til $email.";
-            } else {
-                // Håndter feil ved lagring av tilbakestillingsforespørsel i databasen
-                $error_message = "Feil ved behandling av forespørsel. Prøv igjen senere.";
+            $id = $resultId;
+            try {
+                $randomToken = bin2hex(random_bytes(10));
+            } catch (\Random\RandomException $e) {
+                echo $e;
+                exit;
             }
+            $newPassword = password_hash($randomToken, PASSWORD_DEFAULT);
+
+            $stmtUpdatePassword = $conn->prepare("UPDATE bruker SET passord = ? WHERE id = ?");
+            $stmtUpdatePassword->bind_param("si", $newPassword, $id);
+            $stmtUpdatePassword->execute();
+            if ($stmtUpdatePassword->affected_rows === 1) {
+                $emailSubject = "Temporary Password";
+                $emailMessage = "Dit midlertidige passord er: $randomToken, husk å endre passord etter du har logget deg inn!";
+                mail($email, $emailSubject, $emailMessage);
+                $message = $success;
+                $message = $message . "<br>" . $randomToken; # TODO: Denne linjen må fjernes før vi leverer
+            } elseif($stmtUpdatePassword->affected_rows === -1)
+                $message = $databaseError0;
+            else
+                $message = $databaseError1;
         } else {
-            // E-postadressen tilhører ikke en foreleser
-            $emailError = "E-postadressen tilhører ikke en foreleser i systemet.";
+            $message = $success;
         }
     }
 }
@@ -51,33 +69,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glemt Passord (Foreleser)</title>
+    <title>Glemt passord</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
 
-<?php include "header.php"; ?>
+<?php require_once "modules/header.php"; ?>
 
 <main>
     <div class="module-wrapper">
-        <h2>Glemt Passord (Foreleser)</h2>
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="forgot-password-form">
-            <div class="forgot-password-form-email">
-                <label for="email">E-post:</label>
-                <input type="email" name="email" id="email" value="<?php echo $email; ?>">
-                <?php if (!empty($emailError)) echo "<p class='error'>$emailError</p>" ?>
-            </div>
-            <div class="form-submit">
-                <button type="submit">Klikk for å få midlertidig passord </button>
-            </div>
-        </form>
-        <?php
-        if (isset($success_message)) {
-            echo "<p class='success'>$success_message</p>";
-        } elseif (isset($error_message)) {
-            echo "<p class='error'>$error_message</p>";
-        }
-        ?>
+        <div class="forgot-password-module">
+            <h2 class="module-header">Glemt Passord</h2>
+            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" class="forgot-password-form">
+                <?php if (!empty($message)) echo "<div class='center'>" . $message . "</div>" ?>
+                <div class="forgot-password-form-email">
+                    <label for="email">E-post:</label>
+                    <input type="email" name="email" id="email">
+                </div>
+                <div class="form-submit">
+                    <button type="submit">Klikk for å få et midlertidig passord </button>
+                </div>
+            </form>
+        </div>
     </div>
 </main>
 

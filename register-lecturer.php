@@ -1,7 +1,10 @@
 <?php
 session_start();
 
-// Sjekk om skjemaet er sendt
+$message = "";
+
+$name = $email = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST['name'];
     $email = $_POST['email'];
@@ -66,26 +69,73 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nb">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foreleserregistrering</title>
+    <title>Registrer foreleser</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
 
-    <h2>Foreleserregistrering</h2>
+<?php
+require_once "modules/header.php";
+?>
 
-    <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>" enctype="multipart/form-data">
-        Navn: <input type="text" name="name"><br>
-        E-post: <input type="text" name="email"><br>
-        Passord: <input type="password" name="password"><br>
-        Bilde: <input type="file" name="image"><br>
-        Emnenavn: <input type="text" name="subject_name"><br>
-        Emnekode: <input type="text" name="subject_code"><br>
-        Emnepinkode: <input type="text" name="pin_code" maxlength="4"><br>
-        <input type="submit" value="Registrer">
-    </form>
+<main>
+    <div class="module-wrapper">
+        <div class="register-lecturer-module">
+            <h2 class="module-header">Foreleserregistrering</h2>
+            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>"
+                  class="register-lecturer-form" enctype="multipart/form-data" class="register-lecturer-form">
+                <?php if (!empty($message)) echo "<div class='center'>" . $message . "</div>" ?>
+                <h3>Brukerkonto</h3>
+                <div class="register-form-name">
+                    <label for="name">Navn</label>
+                    <input type="text" name="name" id="name" value="<?php echo htmlspecialchars($name) ?>">
+                </div>
+                <div class="register-form-email">
+                    <label for="email">E-post</label>
+                    <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($email) ?>">
+                </div>
+                <div class="register-form-password">
+                    <label for="password">Passord</label>
+                    <input type="password" name="password" id="password">
+                </div>
+                <div class="register-form-picture">
+                    <label for="image">Bilde</label>
+                    <input type="file" name="image" id="image">
+                </div>
+                <h3>Emne</h3>
+                <div class="register-form-subject-name">
+                    <label for="subject-name">Emnenavn</label>
+                    <input type="text" name="subject_name" id="subject-name">
+                </div>
+                <div class="register-form-subject-code">
+                    <label for="subject-code">Emnekode</label>
+                    <input type="text" name="subject_code" id="subject-code">
+                </div>
+                <div class="register-form-subject-pin">
+                    <label for="subject-pin">Emnepinkode</label>
+                    <input type="text" name="pin_code" maxlength="4" id="subject-pin">
+                </div>
+                <div class="form-submit">
+                    <button>Registrer</button>
+                </div>
+            </form>
+            <div class="register-lecturer-other-options center">
+                <div class="register-lecturer-option-other-signup center">
+                    <p><a href="/register-student.php">Opprett en studentkonto</a></p>
+                </div>
+                <div class="register-lecturer-option-login">
+                    <p>Har du en konto? <a href="/login.php">Logg inn</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 
 </body>
 </html>

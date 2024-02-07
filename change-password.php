@@ -9,9 +9,9 @@ $passwordCantBeNull = "Passordet kan ikke være blankt";
 $passwordConfirmationFail = "Passordet matcher ikke";
 $passwordTooShort = "Passordet er for kort. Minst $minimumPasswordLength tegn";
 
-$passwordChangeSuccess = "<div class='success center'><p>Passordet har blitt oppdatert</p></div>";
-$databaseError0 = "<div class='error center'><p>Feil i database #0</p></div>";
-$databaseError1 = "<div class='error center'><p>Feil i database #1</p></div>";
+$passwordChangeSuccess = "<p class='success'>Passordet har blitt oppdatert</p>";
+$databaseError0 = "<p class='error'>Feil i database #0</p>";
+$databaseError1 = "<p class='error'>Feil i database #1</p>";
 
 $oldPasswordError = $newPasswordError = $newPasswordConfirmationError = "";
 $oldPassword = $newPassword = $newPasswordConfirmation = "";
@@ -87,21 +87,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="change-password-module">
             <h2 class="module-header">Bytt passord for <?php echo $name ?></h2>
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" class="change-password-form">
-                <?php if (!empty($message)) echo $message ?>
+                <?php if (!empty($message)) echo "<div class='center'>" . $message . "</div>" ?>
                 <div class="change-password-form-old-password">
                     <label for="old-password">Gammelt passord</label>
                     <input type="password" name="old-password" id="old-password">
-                    <?php if (!empty($oldPasswordError)) echo "<p class='error'>$oldPasswordError</p>" ?>
+                    <?php if (!empty($oldPasswordError)) echo "<p class='line-form-error'>$oldPasswordError</p>" ?>
                 </div>
                 <div class="change-password-form-new-password">
                     <label for="new-password">Nytt passord</label>
                     <input type="password" name="new-password" id="new-password">
-                    <?php if (!empty($newPasswordError)) echo "<p class='error'>$newPasswordError</p>" ?>
+                    <?php if (!empty($newPasswordError)) echo "<p class='line-form-error'>$newPasswordError</p>" ?>
                 </div>
                 <div class="change-password-form-new-password">
                     <label for="new-password-confirmation">Bekreft nytt passord</label>
                     <input type="password" name="new-password-confirmation" id="new-password-confirmation">
-                    <?php if (!empty($newPasswordConfirmationError)) echo "<p class='error'>$newPasswordConfirmationError</p>" ?>
+                    <?php if (!empty($newPasswordConfirmationError)) echo "<p class='line-form-error'>$newPasswordConfirmationError</p>" ?>
                 </div>
                 <div class="form-submit">
                     <button>Endre passord</button>
