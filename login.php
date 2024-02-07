@@ -16,18 +16,15 @@ $loginError = "";
 $email = $password = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    echo "Inne i POST-blokk<br>";
-
-    if (empty($_POST["email"]) || empty($_POST["password"])) {
+    if (empty($_POST["email"]) || empty($_POST["password"]))
         $loginError = $wrongEmailOrPassword;
-    } else {
+    else {
         $email = $_POST["email"];
         $password = $_POST["password"];
 
         $email = trim($email);
         if (!filter_var($email, FILTER_VALIDATE_EMAIL))
             $loginError = $wrongEmailOrPassword;
-        }
     }
 
     if (empty($loginError)) {
@@ -59,9 +56,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         } else {
             $loginError = $wrongEmailOrPassword;
-
         }
     }
+}
 ?>
 
 

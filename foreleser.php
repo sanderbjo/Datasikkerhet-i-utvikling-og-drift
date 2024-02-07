@@ -2,6 +2,10 @@
 <html>
 <body>
 
+<?php
+require_once "modules/header.php"
+?>
+
 <h1>Foreleser</h1>
 <h2>Meldinger</h2>
 <div class="meldinger"> <div>

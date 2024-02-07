@@ -1,8 +1,14 @@
 <header>
     <nav>
-        <ul>
-            <li><a href="#">Forside</a></li>
-        </ul>
+        <?php
+        if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
+            if ($_SESSION["role"] === 1)
+                require_once "header-modules/nav-prof.php";
+            else
+                require_once "header-modules/nav-student.php";
+        }
+        ?>
+
     </nav>
     <div class="user-options">
         <?php
