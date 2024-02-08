@@ -39,14 +39,24 @@ require_once "modules/header.php"
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                $emnekode = $row["emnekode"];
-
-                // Her kan du utføre handlinger som krever $emnekode
-                echo "Emnekode: " . htmlspecialchars($emnekode) . "<br>";
-                echo "Emnenavn: " . htmlspecialchars($row["navn"]) . "<br>";
-
-
+                    $emnekode = $row["emnekode"];
+                
+                    // Her kan du utføre handlinger som krever $emnekode
+                    echo "Emnekode: " . htmlspecialchars($emnekode) . "<br>";
+                    echo "Emnenavn: " . htmlspecialchars($row["navn"]) . "<br>";
+                
+                    // Hent bilde basert på foreleserens ID
+                    $foreleserId = $_SESSION["id"];
+                    $bildeSti = "uploads/" . $foreleserId . ".jpg";
+                
+                    // Sjekk om bilde finnes
+                    if (file_exists($bildeSti)) {
+                        echo "<img src='" . $bildeSti . "' width='300' height='200' alt='Bilde av foreleser'><br>";
+                    } else {
+                        echo "Bilde ikke tilgjengelig";
+                    }
                 }
+                
             } else {
                 echo "Ingen emner funnet for denne brukeren.";
             }
