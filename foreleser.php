@@ -32,44 +32,44 @@ require_once "modules/header.php"
 
             $sql = "SELECT bruker_id, emnekode, navn FROM emne WHERE bruker_id = ?";
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id);
-$stmt->execute();
-$result = $stmt->get_result();
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $emnekode = $row["emnekode"];
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                $emnekode = $row["emnekode"];
 
-        // Her kan du utføre handlinger som krever $emnekode
-        echo "Emnekode: " . htmlspecialchars($emnekode) . "<br>";
-echo "Emnenavn: " . htmlspecialchars($row["navn"]) . "<br>";
+                // Her kan du utføre handlinger som krever $emnekode
+                echo "Emnekode: " . htmlspecialchars($emnekode) . "<br>";
+                echo "Emnenavn: " . htmlspecialchars($row["navn"]) . "<br>";
 
 
-    }
-} else {
-    echo "Ingen emner funnet for denne brukeren.";
-}
+                }
+            } else {
+                echo "Ingen emner funnet for denne brukeren.";
+            }
 
-$stmt = $conn->prepare("SELECT id, innhold, emne_emnekode FROM melding WHERE emne_emnekode = ?");
-$stmt->bind_param("s", $emnekode);
-$stmt->execute();
-$result = $stmt->get_result();
+            $stmt = $conn->prepare("SELECT id, innhold, emne_emnekode FROM melding WHERE emne_emnekode = ?");
+            $stmt->bind_param("s", $emnekode);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo "meldings id: " . htmlspecialchars($row["id"]) . "<br>Melding: " . htmlspecialchars($row["innhold"]) . "<br>emnekode: " . $row["emne_emnekode"] . "<br>
-           <form action='svar.php' method='post'>
-           Svar: <input type='text' name='svar'><br>
-           <input type='hidden' name='bruker_id' value='" . $id . "'>
-           <input type='hidden' name='emnekode' value='" . $row["emne_emnekode"] . "'>
-           <input type='hidden' name='id' value='" . $row["id"] . "'>
-           <input type='submit' value='Send inn ditt svar!'>
-           </form>";
-    }
-} else {
-    echo "Ingen meldinger funnet for dette emnet.";
-}
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo "meldings id: " . htmlspecialchars($row["id"]) . "<br>Melding: " . htmlspecialchars($row["innhold"]) . "<br>emnekode: " . $row["emne_emnekode"] . "<br>
+                    <form action='svar.php' method='post'>
+                    Svar: <input type='text' name='svar'><br>
+                    <input type='hidden' name='bruker_id' value='" . $id . "'>
+                    <input type='hidden' name='emnekode' value='" . $row["emne_emnekode"] . "'>
+                    <input type='hidden' name='id' value='" . $row["id"] . "'>
+                    <input type='submit' value='Send inn ditt svar!'>
+                    </form>";
+                }
+            } else {
+                echo "Ingen meldinger funnet for dette emnet.";
+            }
 
             $conn->close();
             ?>
