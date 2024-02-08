@@ -61,6 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             } else {
                 $message = $wrongPassword;
             }
+        } elseif($stmt->num_rows === -1) {
+            $message = $databaseError1;
         } else {
             $message = $databaseError0;
         }
