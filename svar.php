@@ -4,12 +4,12 @@
 
 <?php
    require "includes/db-connection.php";
-
-   $sql = "INSERT INTO `svar` (`id`,`innhold`, `melding_id`, `bruker_id`) VALUES ('".$_POST["id"]."','".$_POST["svar"]."', '".$_POST["id"]."', '".$_POST["bruker_id"]."');";
-
-  try {
-
-    if ($conn->query($sql) === TRUE) {
+     $sql = "INSERT INTO `svar` (`id`, `innhold`, `melding_id`, `bruker_id`) VALUES (?, ?, ?, ?)";
+try {
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ssii", $_POST["id"], $_POST["svar"], $_POST["id"], $_POST["bruker_id"]);
+    $stmt->execute();
+    if ($stmt->affected_rows > 0) {
         echo "Svaret ditt har blitt registrert";
     } else {
         echo "Det oppstod en feil";
@@ -23,7 +23,7 @@
         echo "det skjedde en uforvented database feil!";
     }
 }
-   echo "<br><a href='foreleser.php?id=".$_POST["bruker_id"]."'>tilbake til foreleser siden</a>";
+   echo "<br><a href='foreleser.php'>tilbake til foreleser siden</a>";
    $conn->close();
    ?>
 

@@ -1,16 +1,9 @@
 <?php
-session_start();
-
-if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
-    if ($_SESSION["role"] === 1)
-        header("Location: foreleser.php");
-    else
-        header("Location: student.php");
-    exit;
-}
-$_SESSION["loggedIn"] = false;
+require_once "includes/validate-not-logged-in.php";
 
 $wrongEmailOrPassword = "Feil e-post eller passord";
+$databaseError0 = "Feil i database #0";
+
 
 $loginError = "";
 $email = $password = "";
@@ -45,13 +38,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $_SESSION["name"] = $resultName;
                 $_SESSION["role"] = $resultRoleId;
                 if ($_SESSION["role"] === 1)
-                    header("Location: foreleser.php");
+                    header("Location: /foreleser.php");
                 else
-                    header("Location: student.php");
+                    header("Location: /student.php");
                 exit;
             } else {
                 $loginError = $wrongEmailOrPassword;
             }
+        } elseif ($stmt->num_rows !== 0) {
+            $loginError = $databaseError0;
         } else {
             $loginError = $wrongEmailOrPassword;
         }

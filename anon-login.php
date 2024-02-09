@@ -1,30 +1,42 @@
 <?php
-session_start();
+require_once "includes/validate-not-logged-in.php";
 
 $wrongPin = "Ugyldig kode";
+$databaseError0 = "Feil i database #0";
 
 $loginError = "";
-$email = $password = "";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (empty($_POST["pin"])) {
+$pin = "";
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") { 
+    if (empty($_POST["pin"]))
         $loginError = $wrongPin;
-    } else {
+    else {
         $pin = $_POST["pin"];
-        if (strlen($pin) !== 4) {
+        if (strlen($pin) !== 4 || !is_numeric($pin))
             $loginError = $wrongPin;
-        }
     }
 
-    if (strcmp($loginError, "") === 0) {
-        # TODO: Hvis kode er riktig, lag en set user og subject og redirect
-        # Er ikke helt sikker på implementeringen men her settes 'user' til 'anon' og
-        # 'subject' til 'emneID'. Så må vi gjøre en validering på alle sider som
-        # passer på at en anon-bruker kun får tilgang til emne som er satt i 'subject'
-        $_SESSION["user"] = "anon";
-        $_SESSION["subject"] = $pin;
-        header("Location: subjects.php");
-        exit;
+    if (empty($loginError)) {
+        require "includes/db-connection.php";
+
+        # TODO: Emne-pin burde være en string i database. Noen burde endre det til varchar(4)
+        $stmt = $conn->prepare("SELECT emnekode FROM emne WHERE pin = ?"); 
+        $stmt->bind_param("s", $pin);
+        $stmt->execute();
+        $stmt->store_result();
+        if ($stmt->num_rows === 1) {
+            $resultSubjectCode = -1;
+            $stmt->bind_result($resultSubjectCode);
+            $stmt->fetch();
+            $_SESSION["anon"] = true;
+            $_SESSION["anon-subject"] = $resultSubjectCode;
+            header("Location: emneside"); #TODO: Hvor skal man sendt til?
+            exit;
+        } elseif ($stmt->num_rows !== 0)
+            $loginError = $databaseError0;
+        else
+            $loginError = $wrongPin;
     }
 }
 ?>
@@ -46,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="anon-login-module">
             <h2 class="module-header">Logg inn anonymt</h2>
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" class="login-form">
-                <?php if (!empty($loginError)) echo "<div class='error center'><p>$loginError</p></div>" ?>
+                <?php if (!empty($loginError)) echo "<div class='center'><p class='error'>$loginError</p></div>" ?>
                 <div class="login-form-email">
                     <label for="pin">Kode (Fire sifre)</label>
                     <input type="text" name="pin" id="pin" inputmode="numeric" minlength="4" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '');">

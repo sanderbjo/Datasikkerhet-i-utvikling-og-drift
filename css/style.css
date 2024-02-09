@@ -7,10 +7,28 @@
     list-style: none;
 }
 
+a {
+    color: royalblue;
+}
+
+button {
+    cursor: pointer;
+}
+
 header {
     display: flex;
     justify-content: space-between;
     border-bottom: 1px lightgrey solid;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    padding: 0 1rem;
+}
+
+header > div {
+    display: flex;
+    align-items: center;
 }
 
 header ul {
@@ -32,6 +50,8 @@ header button {
     border: none;
     padding: 1rem;
     font-size: 1em;
+    color: royalblue;
+    text-decoration-line: underline;
 }
 
 header a:hover,
@@ -43,34 +63,29 @@ header button:hover {
     display: flex;
     flex-direction: column;
     /*justify-content: center;*/
-    padding-top: 4rem;
+    padding-top: 2rem;
 }
 
-.login-module,
-.change-password-module,
-.anon-login-module {
+[class$="module"] {
     width: 100%;
     max-width: 20rem;
     align-self: center;
     justify-self: center;
 }
 
-.login-form,
-.change-password-form {
+[class$="module"] [class$="form"] {
     display: flex;
     flex-direction: column;
     padding: 1rem;
 }
 
-.login-form div,
-.change-password-form div {
+[class$="module"] [class$="form"] div {
     display: flex;
     flex-direction: column;
     position: relative;
 }
 
-.login-form div:not(:last-child),
-.change-password-form div:not(:last-child){
+[class$="module"] [class$="form"] div:not(:last-child) {
     margin-bottom: 1rem;
 }
 
@@ -84,25 +99,24 @@ header button:hover {
     text-align: center;
     font-weight: bold;
 }
-.error {
+
+[class$="error"] {
     color: darkred;
     font-weight: bold;
 }
 
-.success {
-    color: lawngreen;
+[class$="success"] {
+    color: limegreen;
+    /*color: lawngreen;*/
     font-weight: bold;
 }
 
-form div .error {
-    position: absolute;
-    left: calc(100% + 1rem);
-    bottom: 0;
-    width: max-content;
+[class$="module"] > [class*="options"] > div {
+    margin-bottom: 1rem;
 }
 
-.login-other-options div {
-    margin-bottom: 1rem;
+[class$="module"] > [class*="options"] > div > p{
+    margin-bottom: 0.5rem;
 }
 
 .center {
@@ -110,5 +124,62 @@ form div .error {
 }
 
 .wrapper {
-    padding: 2rem 4rem;
+    padding: 2rem;
+}
+
+.wrapper > section,
+.wrapper > article {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 900px;
+}
+
+article section {
+    margin-bottom: 1rem;
+}
+
+section h2,
+article h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+article h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+article > ul,
+article section > ul,
+article p {
+    margin-bottom: 0.5rem;
+}
+
+article ul > li {
+    margin-top: 0.2rem;
+}
+
+article ul > li > span {
+    display: flex;
+}
+
+article ul > li > span > span {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+article ul > li > span > span:after {
+    content: '';
+    border-bottom: 2px dotted lightgrey;
+    flex:1;
+    margin: 0 10px;
+}
+
+ul.square {
+    padding-left: 40px;
+}
+ul.square > li {
+    list-style-type: square;
+    list-style-position: outside;
 }

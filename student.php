@@ -10,33 +10,60 @@ require_once "includes/validate.php";
     <title>Student</title>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body>
 
 <?php
 require_once "modules/header.php"
 ?>
 
-<h1>Student</h1>
-<h2>Velg Emne</h2>
+<main>
+    <div class="wrapper">
+        <section>
+            <h2>Emner</h2>
+            <?php
+            require "includes/db-connection.php";
 
-<?php
-require "includes/db-connection.php";
+            if ($_SERVER["REQUEST_METHOD"] === "POST") {
+                if (!empty($_POST["emnekode"]) && !empty($_POST["melding"])) {
+                    $emnekode = $_POST["emnekode"];
+                    $melding = $_POST["melding"];
+                    $bruker_id = $_SESSION["id"];
 
-$servername = "158.39.188.206";
+                    $stmt = $conn->prepare("INSERT INTO melding (innhold, bruker_id, emne_emnekode) VALUES (?, ?, ?)");
+                    $stmt->bind_param("sis", $melding, $bruker_id, $emnekode);
+                    if ($stmt->execute()) {
+                        echo "Melding sendt suksessfullt!";
+                    } else {
+                        echo "Feil under sending av melding: " . $conn->error;
+                    }
+                } else {
+                    echo "Vennligst fyll ut alle feltene.";
+                }
+            }
 
-$sql = "SELECT emnekode, navn FROM emne;";
-$result = $conn->query($sql);
+            $sql = "SELECT emnekode, navn FROM emne;";
+            $result = $conn->query($sql);
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo "<a href='" . $row["emnekode"]. ".php'>" . $row["navn"]. "</a> <br>";
-    }
-} else {
-    echo "0 results";
-}
-$conn->close();
-?>
+            if ($result->num_rows > 0) {
+                echo "<form method='post' action='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "'>";
+                echo "<select name='emnekode'>";
+                while ($row = $result->fetch_assoc()) {
+                    echo "<option value='" . $row["emnekode"]. "'>" . $row["navn"]. "</option>";
+                }
+                echo "</select>";
+                echo "<textarea name='melding' placeholder='Skriv inn melding...'></textarea>";
+                echo "<input type='submit' value='Send melding'>";
+                echo "</form>";
+            } else {
+                echo "Ingen tilgjengelige emner.";
+            }
+            $conn->close();
+            ?>
+        </section>
+    </div>
+</main>
 
 </body>
-</html>
 
+</html>

@@ -18,9 +18,12 @@ require "includes/validate.php";
 
 <main>
     <div class="wrapper">
-        <ul>
-            <li><a href="change-password.php">Bytt passord</a></li>
-        </ul>
+        <section>
+            <h2>Brukerinnstillinger</h2>
+            <ul>
+                <li><a href="change-password.php">Bytt passord</a></li>
+            </ul>
+        </section>
     </div>
 </main>
 
