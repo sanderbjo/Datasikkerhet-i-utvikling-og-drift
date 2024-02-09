@@ -47,24 +47,8 @@ if (isset($_SESSION["bruker"])) {
     echo "Ingen tilgang.";
 }
 
-// Sjekk om formen for å legge ut melding er utfylt
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['melding_innhold'])) {
-    // Valider inputdataen
-    $melding_innhold = mysqli_real_escape_string($conn, $_POST['melding_innhold']);
-
-    // Legg til meldingen i databasen
-    $insert_query = "INSERT INTO melding (innhold, bruker_id, emne_emnekode) VALUES ('$melding_innhold', NULL, '$emnekode')";
-    $insert_result = mysqli_query($conn, $insert_query);
-
-    if (!$insert_result) {
-        // Handle error
-        echo "Feil ved innsending av melding.";
-        exit();
-    }
-}
-
 // Hent alle meldinger og svar for emnet fra databasen
-$query_meldinger = "SELECT m.id, m.innhold, m.foreleser_svar
+$query_meldinger = "SELECT m.id, m.innhold, m.emne_emnekode
                     FROM melding m
                     LEFT JOIN bruker b ON m.bruker_id = b.id
                     WHERE m.emne_emnekode = '$emnekode'";
@@ -82,7 +66,7 @@ if ($result_meldinger && mysqli_num_rows($result_meldinger) > 0) {
 <html lang="nb">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">      
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $emneinfo['emnenavn']; ?> - Emneside</title>
 </head>
@@ -103,18 +87,24 @@ if ($result_meldinger && mysqli_num_rows($result_meldinger) > 0) {
         <h3>Meldinger fra Studenter</h3>
 
         <?php
-        // Vis alle meldinger og svar for emnet
+        
+        // Vis alle meldinger og eventuelle svar for emnet
         if (!empty($meldinger)) {
             foreach ($meldinger as $melding) {
                 echo "<div class='melding'>";
                 echo "<p>Anonym skrev:</p>";
                 echo "<p>{$melding['innhold']}</p>";
 
-                // Vis foreleseren sitt svar om det finnes
-                if (!empty($melding['foreleser_svar'])) {
+                // Hent svar til meldingen
+                $query_svar = "SELECT innhold FROM svar WHERE melding_id = '{$melding['id']}'";
+                $result_svar = mysqli_query($conn, $query_svar);
+
+                if ($result_svar && mysqli_num_rows($result_svar) > 0) {
+                    $svar = mysqli_fetch_assoc($result_svar);
                     echo "<p>Foreleserens svar:</p>";
-                    echo "<p>{$melding['foreleser_svar']}</p>";
+                    echo "<p>{$svar['innhold']}</p>";
                 }
+
                 echo "</div>";
             }
         } else {
