@@ -53,7 +53,7 @@ require_once "modules/header.php"
                     if (file_exists($bildeSti)) {
                         echo "<img src='" . $bildeSti . "' width='300' height='200' alt='Bilde av foreleser'><br>";
                     } else {
-                        echo "Bilde ikke tilgjengelig";
+                        echo "Bilde ikke tilgjengelig<br>";
                     }
                 }
                 
