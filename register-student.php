@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once "includes/validate-not-logged-in.php";
 
 $formNotFilledOut = "<p class='error'>Fyll ut alle feltene</p>";
 $invalidEmail = "<p class='error'>Ugyldig epost</p>";
