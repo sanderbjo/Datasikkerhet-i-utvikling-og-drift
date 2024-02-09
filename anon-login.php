@@ -22,8 +22,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         # 'subject' til 'emneID'. Så må vi gjøre en validering på alle sider som
         # passer på at en anon-bruker kun får tilgang til emne som er satt i 'subject'
         $_SESSION["user"] = "anon";
-        $_SESSION["subject"] = 0; # TODO: emnekode
-        header("Location: index.php");
+        $_SESSION["subject"] = $pin;
+        header("Location: subjects.php");
         exit;
     }
 }

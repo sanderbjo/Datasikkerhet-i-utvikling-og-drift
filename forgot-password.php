@@ -1,8 +1,10 @@
 <?php
-require "includes/validate.php";
+require_once "includes/validate.php";
 require "includes/db-connection.php";
 
 $email = $emailError = "";
+$name = $_SESSION["name"];
+
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($_POST["email"])) {
