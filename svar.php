@@ -23,7 +23,7 @@
         echo "det skjedde en uforvented database feil!";
     }
 }
-   echo "<br><a href='foreleser.php?id=".$_POST["bruker_id"]."'>tilbake til foreleser siden</a>";
+   echo "<br><a href='foreleser.php'>tilbake til foreleser siden</a>";
    $conn->close();
    ?>
 
