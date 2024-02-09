@@ -25,9 +25,6 @@ require_once "modules/header.php"
             <?php
             require "includes/db-connection.php";
 
-            # $urlq = $_SERVER['QUERY_STRING'];
-            # parse_str($urlq, $queryArray);
-
             $id = $_SESSION["id"];
 
             $sql = "SELECT bruker_id, emnekode, navn FROM emne WHERE bruker_id = ?";
