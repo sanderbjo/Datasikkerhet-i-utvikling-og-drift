@@ -53,6 +53,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body>
 
+<?php
+require_once "modules/header.php";
+?>
+
 <main>
     <div class="module-wrapper">
         <div class="anon-login-module">
@@ -68,12 +72,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 </div>
             </form>
             <div class="login-other-options center">
-                <div class="login-option-code">
+                <div class="login-option-account">
                     <p><a href="/login.php">Logg inn med konto</a></p>
                 </div>
                 <div class="login-option-signup center">
-                    <p><a href="/signup">Opprett en konto</a>
-                    </p>
+                    <p><a href="/register-student.php">Opprett en studentkonto</a></p>
+                    <p><a href="/register-lecturer.php">Opprett en foreleserkonto</a></p>
                 </div>
             </div>
         </div>
