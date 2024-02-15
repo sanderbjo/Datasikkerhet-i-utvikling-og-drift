@@ -1,32 +1,38 @@
 <?php
 require_once "includes/validate-not-logged-in.php";
 
+$formNotFilled = "Alle feltene må være fylt ut";
 $wrongPin = "Ugyldig kode";
 $databaseError0 = "Feil i database #0";
 
 $loginError = "";
 
-$pin = "";
+$subject = $pin = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") { 
-    if (empty($_POST["pin"]))
-        $loginError = $wrongPin;
+    if (empty($_POST["subject"]))
+        $loginError = $formNotFilled;
     else {
-        $pin = $_POST["pin"];
-        if (strlen($pin) !== 4 || !is_numeric($pin))
-            $loginError = $wrongPin;
+        $subject = $_POST["subject"];
+        if (empty($_POST["pin"]))
+            $loginError = $formNotFilled;
+        else {
+            $pin = $_POST["pin"];
+            if (strlen($pin) !== 4 || !is_numeric($pin))
+                $loginError = $wrongPin;
+        }
     }
 
     if (empty($loginError)) {
         require "includes/db-connection.php";
 
         # TODO: Emne-pin burde være en string i database. Noen burde endre det til varchar(4)
-        $stmt = $conn->prepare("SELECT emnekode FROM emne WHERE pin = ?"); 
-        $stmt->bind_param("s", $pin);
+        $stmt = $conn->prepare("SELECT emnekode FROM emne WHERE emnekode = ? AND pin = ?"); 
+        $stmt->bind_param("ss", $subject, $pin);
         $stmt->execute();
         $stmt->store_result();
         if ($stmt->num_rows === 1) {
-            $resultSubjectCode = -1;
+            $resultSubjectCode = "";
             $stmt->bind_result($resultSubjectCode);
             $stmt->fetch();
             $_SESSION["anon"] = true;
@@ -63,7 +69,23 @@ require_once "modules/header.php";
             <h2 class="module-header">Logg inn anonymt</h2>
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" class="login-form">
                 <?php if (!empty($loginError)) echo "<div class='center'><p class='error'>$loginError</p></div>" ?>
-                <div class="login-form-email">
+                <div class="login-form-subject">
+                    <label for="subject">Emne</label>
+                    <select name="subject" id="subject" autocomplete required>
+                        <option value="">--Emne--</option>
+                        <?php
+                        require "includes/db-connection.php";
+                        $query = "SELECT emnekode FROM emne";
+                        $result = $conn->query($query);
+                        if ($result->num_rows > 0)
+                            while ($row = $result->fetch_assoc()) {
+                                $selected = (!empty($subject) && $subject === $row["emnekode"]) ? " selected" : "";
+                                echo "<option value=\"" . htmlspecialchars($row["emnekode"]) . "\"$selected>" . htmlspecialchars($row["emnekode"]) . "</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
+                <div class="login-form-code">
                     <label for="pin">Kode (Fire sifre)</label>
                     <input type="text" name="pin" id="pin" inputmode="numeric" minlength="4" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                 </div>

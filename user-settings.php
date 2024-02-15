@@ -21,7 +21,7 @@ require_once "includes/validate.php";
         <section>
             <h2>Brukerinnstillinger</h2>
             <ul>
-                <li><a href="change-password.php">Bytt passord</a></li>
+                <li><a href="/change-password.php">Bytt passord</a></li>
             </ul>
         </section>
     </div>
