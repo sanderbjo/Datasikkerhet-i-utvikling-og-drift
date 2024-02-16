@@ -37,23 +37,29 @@ require_once "modules/header.php"
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $emnekode = $row["emnekode"];
-                
+
                     // Her kan du utføre handlinger som krever $emnekode
                     echo "Emnekode: " . htmlspecialchars($emnekode) . "<br>";
                     echo "Emnenavn: " . htmlspecialchars($row["navn"]) . "<br>";
-                
+
                     // Hent bilde basert på foreleserens ID
                     $foreleserId = $_SESSION["id"];
-                    $bildeSti = "uploads/" . $foreleserId . ".jpg";
-                
+                    $bildeStiJPG = "uploads/" . $foreleserId . ".jpg";
+                    $bildeStiPNG = "uploads/" . $foreleserId . ".png";
+                    $bildeStiGIF = "uploads/" . $foreleserId . ".gif";
+
                     // Sjekk om bilde finnes
-                    if (file_exists($bildeSti)) {
-                        echo "<img src='" . $bildeSti . "' width='300' height='200' alt='Bilde av foreleser'><br>";
+                    if (file_exists($bildeStiJPG)) {
+                        echo "<img src='" . $bildeStiJPG . "' width='300' height='200' alt='Bilde av foreleser'><br>";
+                    } elseif (file_exists($bildeStiPNGGIF)){
+                        echo "<img src='" . $bildeStiPNG . "' width='300' height='200' alt='Bilde av foreleser'><br>";
+                    } elseif (file_exists($bildeStiGIF)) {
+                        echo "<img src='" . $bildeStiGIF . "' width='300' height='200' alt='Bilde av foreleser'><br>";
                     } else {
                         echo "Bilde ikke tilgjengelig<br>";
                     }
                 }
-                
+
             } else {
                 echo "Ingen emner funnet for denne brukeren.";
             }
