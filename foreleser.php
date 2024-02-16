@@ -44,11 +44,14 @@ require_once "modules/header.php"
                 
                     // Hent bilde basert på foreleserens ID
                     $foreleserId = $_SESSION["id"];
-                    $bildeSti = "uploads/" . $foreleserId . ".jpg";
+                    $bildeStiJPG = "uploads/" . $foreleserId . ".jpg";
+                    $bildeStiPNG = "uploads/" . $foreleserId . ".png";
                 
                     // Sjekk om bilde finnes
-                    if (file_exists($bildeSti)) {
-                        echo "<img src='" . $bildeSti . "' width='300' height='200' alt='Bilde av foreleser'><br>";
+                    if (file_exists($bildeStiJPG)) {
+                        echo "<img src='" . $bildeStiJPG . "' width='300' height='200' alt='Bilde av foreleser'><br>";
+                    } elseif (file_exists($bildeStiPNG)) {
+                        echo "<img src='" . $bildeStiPNG . "' width='300' height='200' alt='Bilde av foreleser'><br>";
                     } else {
                         echo "Bilde ikke tilgjengelig<br>";
                     }
