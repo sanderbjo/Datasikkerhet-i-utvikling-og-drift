@@ -149,21 +149,50 @@ $conn->close();
                             <?php endforeach; ?>
                         </div>
                         <!-- Legg til anonym kommentar skjema -->
-                        <p>Emnekode: <?php echo htmlspecialchars($emnekode); ?></p>
-
-
                         <form action="subjects2.php?emnekode=<?php echo $emnekode; ?>" method="post">
                             <input type="hidden" name="melding_id" value="<?php echo $meldingId; ?>">
                             <textarea name="melding" rows="3" placeholder="Skriv din anonyme kommentar her"></textarea>
                             <button type="submit">Legg til kommentar</button>
                         </form>
-
+                        <!-- Legg til knapp for å rapportere melding -->
+                        <button onclick="openReportModal(<?php echo $meldingId; ?>)">Rapporter</button>
                     </div>
                 <?php endforeach; ?>
             </div>
         </div>
     </div>
 </main>
+
+<!-- Modalt vindu for å rapportere melding -->
+<div id="reportModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeReportModal()">&times;</span>
+        <form action="report_message.php" method="post">
+            <input type="hidden" name="melding_id" id="melding_id_input" value="">
+            <label for="begrunnelse">Begrunnelse for rapport:</label>
+            <textarea name="begrunnelse" id="begrunnelse" rows="4"></textarea>
+            <button type="submit">Send rapport</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Lukk modalen når siden lastes inn
+    window.onload = function() {
+        closeReportModal();
+    };
+
+    function openReportModal(meldingId) {
+        document.getElementById("melding_id_input").value = meldingId;
+        document.getElementById("reportModal").style.display = "block";
+    }
+
+    function closeReportModal() {
+        document.getElementById("reportModal").style.display = "none";
+    }
+</script>
+
+
 
 </body>
 
