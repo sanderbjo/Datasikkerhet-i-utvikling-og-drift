@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt->fetch();
             $_SESSION["anon"] = true;
             $_SESSION["anon-subject"] = $resultSubjectCode;
-            header("Location: emneside"); #TODO: Hvor skal man sendt til?
+            header("Location: subjects2.php?emnekode=$resultSubjectCode"); // Endret her for å inkludere emnekode som parameter
             exit;
         } elseif ($stmt->num_rows !== 0)
             $loginError = $databaseError0;
