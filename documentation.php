@@ -34,7 +34,7 @@ require_once "modules/header.php";
             <section>
                 <h3>Steg 1 - Hva som er gjort</h3>
                 <p>
-                    Tekst
+                I steg 1 av prosjektet har vi opprettet en nettside som er bygd på PHP. Vi startet med å lage et basic HTML-layout av sidene, og satte opp en enkel ER-modell i MySQL Workbench. Etter litt research på både Youtube og Google satte vi opp Apache webserver og phpmyadmin for å drifte nettsiden vår. Etter dette kunne vi begynne å implementere siden «live» og teste blant annet tilkobling til database med både sending og henting av data. Databasen ble senere nødt til å videreutvikles litt, og dette ble gjort via SQL i phpmyadmin. Vi har brukt minimalt med javascript og kun tatt i bruk enkel CSS for utseendets skyld. Koden vi har skrevet har vært en blanding av egen research, ting vi har funnet på nett, egen kode og ChatGPT. 
                 </p>
             </section>
         </article>
