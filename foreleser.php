@@ -25,10 +25,9 @@ require_once "modules/header.php"
             <?php
             require "includes/db-connection.php";
 
+            // Hent emner tilknyttet foreleseren
             $id = $_SESSION["id"];
-
             $sql = "SELECT bruker_id, emnekode, navn FROM emne WHERE bruker_id = ?";
-
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $id);
             $stmt->execute();
@@ -64,33 +63,28 @@ require_once "modules/header.php"
                 echo "Ingen emner funnet for denne brukeren.";
             }
 
-            // Hent meldinger og deres tilknyttede svar
-            $stmt = $conn->prepare("
-                SELECT m.id AS melding_id, m.innhold AS melding_innhold, m.emne_emnekode,
-                       s.id AS svar_id, s.innhold AS svar_innhold
-                FROM melding AS m
-                LEFT JOIN svar AS s ON m.id = s.melding_id
-                WHERE m.emne_emnekode = ?
-            ");
+            // Hent meldinger tilknyttet emnet
+            $stmt = $conn->prepare("SELECT m.id, m.innhold, m.emne_emnekode, COUNT(r.melding_id) AS antall_rapporteringer
+                                    FROM melding AS m
+                                    LEFT JOIN rapporterte_meldinger AS r ON m.id = r.melding_id
+                                    WHERE m.emne_emnekode = ?
+                                    GROUP BY m.id");
             $stmt->bind_param("s", $emnekode);
             $stmt->execute();
             $result = $stmt->get_result();
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    echo "Meldings id: " . htmlspecialchars($row["melding_id"]) . "<br>Melding: " . htmlspecialchars($row["melding_innhold"]) . "<br>Emnekode: " . $row["emne_emnekode"] . "<br>";
+                    echo "Melding: " . htmlspecialchars($row["innhold"]) . "<br>";
+                    echo "Emnekode: " . htmlspecialchars($row["emne_emnekode"]) . "<br>";
+                    echo "Antall rapporteringer: " . htmlspecialchars($row["antall_rapporteringer"]) . "<br>";
 
-                    // Hvis det finnes et tilknyttet svar, vis det
-                    if (!empty($row["svar_id"])) {
-                        echo "Svar: " . htmlspecialchars($row["svar_innhold"]);
+                    // Vis en visuell indikator hvis meldingen er rapportert
+                    if ($row["antall_rapporteringer"] > 0) {
+                        echo "<p style='color: red;'>Denne meldingen er rapportert.</p>";
                     }
-                    echo "<form action='svar.php' method='post'>
-                        Svar:
-                        <input type='text' name='svar'><br>
-                        <input type='hidden' name='emnekode' value='" . $row["emne_emnekode"] . "'>
-                        <input type='hidden' name='id' value='" . $row["melding_id"] . "'>
-                        <input type='submit' value='Send inn ditt svar!'>
-                    </form>";
+
+                    // Legg til logikk for å vise andre detaljer om meldingen om nødvendig
                 }
             } else {
                 echo "Ingen meldinger funnet for dette emnet.";
