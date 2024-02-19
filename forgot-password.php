@@ -1,29 +1,36 @@
 <?php
 session_start();
+require_once 'phpmailer/src/PHPMailer.php';
+require_once 'phpmailer/src/SMTP.php';
+require_once 'phpmailer/src/Exception.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
 
 $emailCantBeNull = "<p class='error'>Blank epost</p>";
 $invalidEmail = "<p class='error'>Ugyldig epost</p>";
-# Success blir oppdatert med epost senere i koden
 $success = "<p class='success'>Hvis det er en konto knyttet til 'epost' har en mail blitt sendt</p>";
 $databaseError0 = "<p class='error'>Feil i database #0</p>";
 $databaseError1 = "<p class='error'>Feil i database #1</p>";
 
-$message = "";
+$msg = "";
 $email = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    if (empty($_POST["email"]))
-        $message = $emailCantBeNull;
-    else {
+    if (empty($_POST["email"])) {
+        $msg = $emailCantBeNull;
+    } else {
         $email = $_POST["email"];
         $email = trim($email);
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL))
-            $message = $invalidEmail;
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $msg = $invalidEmail;
+        }
     }
 
     $success = "<p class='success'>Hvis det er en konto knyttet til " . $email . " har en mail blitt sendt</p>";
 
-    if (empty($message)) {
+    if (empty($msg)) {
         require "includes/db-connection.php";
         $stmt = $conn->prepare("SELECT id FROM bruker WHERE epost = ?");
         $stmt->bind_param("s", $email);
@@ -47,17 +54,40 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmtUpdatePassword->bind_param("si", $newPassword, $id);
             $stmtUpdatePassword->execute();
             if ($stmtUpdatePassword->affected_rows === 1) {
-                $emailSubject = "Temporary Password";
-                $emailMessage = "Dit midlertidige passord er: $randomToken, husk å endre passord etter du har logget deg inn!";
-                mail($email, $emailSubject, $emailMessage);
-                $message = $success;
-                $message = $message . "<br>" . $randomToken; # TODO: Denne linjen må fjernes før vi leverer
-            } elseif($stmtUpdatePassword->affected_rows === -1)
-                $message = $databaseError0;
-            else
-                $message = $databaseError1;
+                $mail = new PHPMailer(true);
+
+                try {
+                    //Server settings
+                    $mail->isSMTP(); // Send using SMTP
+                    $mail->Host = 'smtp.gmail.com'; // Set the SMTP server to send through
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'mail';
+                    $mail->Password = 'password';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                    $mail->Port = 465;
+
+
+                    //Recipients
+                    $mail->setFrom('mail', 'Password reset');
+                    $mail->addAddress($email);
+
+                    // Content
+                    $mail->isHTML(true);
+                    $mail->Subject = 'Temporary Password';
+                    $mail->Body = "Dit midlertidige passord er: $randomToken, husk å endre passord etter du har logget deg inn!";
+
+                    $mail->send();
+                    $msg = $success;
+                } catch (Exception $e) {
+                    $msg = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+                }
+            } elseif ($stmtUpdatePassword->affected_rows === -1) {
+                $msg = $databaseError0;
+            } else {
+                $msg = $databaseError1;
+            }
         } else {
-            $message = $success;
+            $msg = $success;
         }
     }
 }
@@ -82,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="forgot-password-module">
             <h2 class="module-header">Glemt Passord</h2>
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" class="forgot-password-form">
-                <?php if (!empty($message)) echo "<div class='center'>" . $message . "</div>" ?>
+                <?php if (!empty($msg)) echo "<div class='center'>" . $msg . "</div>"; ?>
                 <div class="forgot-password-form-email">
                     <label for="email">E-post:</label>
                     <input type="email" name="email" id="email">
