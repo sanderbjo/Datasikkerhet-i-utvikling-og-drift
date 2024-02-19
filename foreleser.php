@@ -64,19 +64,31 @@ require_once "modules/header.php"
                 echo "Ingen emner funnet for denne brukeren.";
             }
 
-            $stmt = $conn->prepare("SELECT id, innhold, emne_emnekode FROM melding WHERE emne_emnekode = ?");
+            // Hent meldinger og deres tilknyttede svar
+            $stmt = $conn->prepare("
+                SELECT m.id AS melding_id, m.innhold AS melding_innhold, m.emne_emnekode,
+                       s.id AS svar_id, s.innhold AS svar_innhold
+                FROM melding AS m
+                LEFT JOIN svar AS s ON m.id = s.melding_id
+                WHERE m.emne_emnekode = ?
+            ");
             $stmt->bind_param("s", $emnekode);
             $stmt->execute();
             $result = $stmt->get_result();
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    echo "meldings id: " . htmlspecialchars($row["id"]) . "<br>Melding: " . htmlspecialchars($row["innhold"]) . "<br>emnekode: " . $row["emne_emnekode"] . "<br>
-                    <form action='svar.php' method='post'>
+                    echo "Meldings id: " . htmlspecialchars($row["melding_id"]) . "<br>Melding: " . htmlspecialchars($row["melding_innhold"]) . "<br>Emnekode: " . $row["emne_emnekode"] . "<br>";
+
+                    // Hvis det finnes et tilknyttet svar, vis det
+                    if (!empty($row["svar_id"])) {
+                        echo "Svar: " . htmlspecialchars($row["svar_innhold"]);
+                    }
+                    echo "<form action='svar.php' method='post'>
                         Svar:
                         <input type='text' name='svar'><br>
                         <input type='hidden' name='emnekode' value='" . $row["emne_emnekode"] . "'>
-                        <input type='hidden' name='id' value='" . $row["id"] . "'>
+                        <input type='hidden' name='id' value='" . $row["melding_id"] . "'>
                         <input type='submit' value='Send inn ditt svar!'>
                     </form>";
                 }
