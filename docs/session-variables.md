@@ -26,3 +26,10 @@ Rolle på bruker.
 
 - 1 = Foreleser
 - 2 = Elev
+
+## csrf-* (string)
+Auth tokens som må valideres for at en form skal være gyldig.
+
+- csrf-changePassword
+- csrf-login
+- csrf-logout
