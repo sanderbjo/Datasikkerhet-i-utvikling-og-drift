@@ -1,5 +1,16 @@
 <?php
 
+define("PV_CON_MINIMUM_PASSWORD_LENGTH", 6);
+
+define("PV_ERR_OK", 0);
+define("PV_ERR_PASSWORD_TOO_SHORT", 1);
+
+function validatePassword(string $password) {
+    if (strlen($password) <= PV_CON_MINIMUM_PASSWORD_LENGTH)
+        return PV_ERR_PASSWORD_TOO_SHORT;
+    return PV_ERR_OK;
+}
+
 function pepperPassword(string $password) {
     $pepperFilePath = "/inc/password/pepper.txt";
 

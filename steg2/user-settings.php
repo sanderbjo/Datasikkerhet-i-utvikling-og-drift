@@ -2,7 +2,7 @@
 
 require_once "inc/validation/login-validation.php";
 
-logginCheckRedirect();
+loggedInOrRedirect();
 
 ?>
 
@@ -18,7 +18,7 @@ logginCheckRedirect();
 
 <body>
 
-<?php require_once "inc/modules/header.php" ?>
+<?php require_once "/inc/modules/header.php" ?>
 
 <main>
     <div class="wrapper">
@@ -31,7 +31,7 @@ logginCheckRedirect();
     </div>
 </main>
 
-<?php require_once "inc/modules/footer.php" ?>
+<?php require_once "/inc/modules/footer.php" ?>
 
 </body>
 

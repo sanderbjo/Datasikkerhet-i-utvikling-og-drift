@@ -6,7 +6,7 @@ notLoggedInOrRedirect();
 
 define("WRONG_EMAIL_OR_PASSWORD",   "<p class'error'>Feil e-post eller passord</p");
 define("DATABASE_ERROR",            "<p class'error'>Feil i database</p");
-define("CSRF_ATTEMPT",              "<p class'error'>En feil har oppstått. Prøve igjen</p");
+define("CSRF_ATTEMPT",              "<p class'error'>En feil har oppstått. Prøv igjen</p");
 
 $loginError = "";
 $email = $password = "";

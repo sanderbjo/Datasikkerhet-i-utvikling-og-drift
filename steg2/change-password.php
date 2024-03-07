@@ -9,7 +9,7 @@ loggedInOrRedirect();
 define("PASSWORD_CHANGE_SUCCESS",       "<p class='success'>Passordet har blitt oppdatert</p>");
 
 define("FORM_NOT_FILLED",               "<p class='error'>Alle feltene må være fylt ut</p>");
-define("PASSWORD_TOO_SHORT",            "<p class='error'>Nytt passord er for kort. Minst " . IV_MINIMUM_PASSWORD_LENGTH . " tegn</p>");
+define("PASSWORD_TOO_SHORT",            "<p class='error'>Nytt passord er for kort. Minst " . PV_CON_MINIMUM_PASSWORD_LENGTH . " tegn</p>");
 define("PASSWORD_CONFIRMATION_FAIL",    "<p class='error'>Nytt Passord matcher ikke med bekreftende passord</p>");
 define("WRONG_PASSWORD",                "<p class='error'>Gammelt passord er feil</p>");
 define("DATABASE_ERROR",                "<p class='error'>Feil i database</p>");
@@ -50,9 +50,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $passwordValidation = validatePassword($newPassword);
             switch ($passwordValidation) {
-                case IV_E_ALL_OK:
+                case PV_ERR_OK:
                     break;
-                case IV_E_PASSWORD_TOO_SHORT:
+                case PV_ERR_PASSWORD_TOO_SHORT:
                     $changePasswordError = PASSWORD_TOO_SHORT;
                     break;
                 default:
