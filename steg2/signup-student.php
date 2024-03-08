@@ -20,7 +20,11 @@ define("GENERIC_ERROR",                 "<p class='error'>En feil har oppstått.
 
 
 $signupError = "";
+
 $name = $email = $password = $passwordConfirmation = "";
+$id = -1;
+# 2 = Student
+$role = 2;
 
 if (!isset($_SESSION["csrf-signup"]))
     $_SESSION["csrf-signup"] = generateAuthToken();
@@ -49,13 +53,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     if (empty($signupError)) {
         
-        if (addUser($conn, $email, $password, $name, 1)) {
+        if (addUser($conn, $email, $password, $name, $role)) {
             $id = getId($conn, $email);
             $loginData = [];
             $loginData["id"] = $id;
             $loginData["email"] = $email;
             $loginData["name"] = $name;
-            $loginData["role"] = 1;
+            $loginData["role"] = $role;
             login($loginData);
 
             header("Location: /");

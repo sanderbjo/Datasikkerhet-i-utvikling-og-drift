@@ -24,6 +24,10 @@ define("SUBJECT_CODE_ALLREADY_IN_USE",  "<p class='error'>Emnekoden er allerede 
 
 $signupError = "";
 $name = $email = $password = $passwordConfirmation = $subjectName = $subjectCode = $subjectPin = "";
+$id = -1;
+
+# 1 = Foreleser
+$role = 1;
 
 if (!isset($_SESSION["csrf-signup"]))
     $_SESSION["csrf-signup"] = generateAuthToken();
@@ -61,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     if (empty($signupError)) {
         $conn->begin_transaction();
-        if (addUser($conn, $email, $password, $name, 1) &&
+        if (addUser($conn, $email, $password, $name, $role) &&
                 addSubject($conn, $subjectName, $subjectCode, $subjectPin)) {
             $conn->commit();
             
@@ -82,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $loginData["id"] = $id;
             $loginData["email"] = $email;
             $loginData["name"] = $name;
-            $loginData["role"] = 1;
+            $loginData["role"] = $role;
             login($loginData);
 
             header("Location: /");

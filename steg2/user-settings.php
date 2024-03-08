@@ -25,7 +25,7 @@ loggedInOrRedirect();
         <section>
             <h2>Brukerinnstillinger</h2>
             <ul>
-                <li><a href="/change-password.php">Bytt passord</a></li>
+                <li><a href="/user-settings/change-password.php">Bytt passord</a></li>
             </ul>
         </section>
     </div>
