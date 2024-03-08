@@ -16,7 +16,7 @@ session_start();
 
 <body>
 
-<?php require_once "/inc/modules/header.php"; ?>
+<?php require_once "inc/modules/header.php"; ?>
 
 <main>
     <div class="wrapper">
@@ -55,7 +55,7 @@ session_start();
     </div>
 </main>
 
-<?php require_once "/inc/modules/footer.php"; ?>
+<?php require_once "inc/modules/footer.php"; ?>
 
 </body>
 

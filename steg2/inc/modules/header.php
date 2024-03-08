@@ -9,7 +9,7 @@
             if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
                 echo "<li class'nav-right'><a href='/user-settings.php'>Instillinger</a></li>";
                 echo "<li class'nav-right'>";
-                require $_SERVER['DOCUMENT_ROOT'] . "../inc/logout-button.php";
+                require "logout-button.php";
                 echo "</li>";
             }
 

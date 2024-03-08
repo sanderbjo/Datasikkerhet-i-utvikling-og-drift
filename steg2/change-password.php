@@ -1,7 +1,7 @@
 <?php
 
-require_once "/inc/validation/session-validation.php";
-require_once "/inc/password/password.php";
+require_once "inc/validation/session-validation.php";
+require_once "inc/password/password.php";
 
 loggedInOrRedirect();
 
@@ -13,7 +13,8 @@ define("PASSWORD_TOO_SHORT",            "<p class='error'>Nytt passord er for ko
 define("PASSWORD_CONFIRMATION_FAIL",    "<p class='error'>Nytt Passord matcher ikke med bekreftende passord</p>");
 define("WRONG_PASSWORD",                "<p class='error'>Gammelt passord er feil</p>");
 define("DATABASE_ERROR",                "<p class='error'>Feil i database</p>");
-define("CSRF_ATTEMPT",                  "<p class='error'>Bruh</p>");
+define("GENERIC_ERROR",                 "<p class='error'>En feil har oppstått. Prøv igjen</p>");
+
 
 
 $id = $_SESSION["id"];
@@ -30,15 +31,11 @@ if (!isset($_SESSION["csrf-changePassword"]))
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (strcmp($_POST["auth-token"], $_SESSION["csrf-changePassword"]) !== 0) {
-        $changePasswordError = CSRF_ATTEMPT;
+        $changePasswordError = GENERIC_ERROR;
     } else {
         $_SESSION["csrf-changePassword"] = generateAuthToken();
 
-        if (
-            empty($_POST["old-password"]) ||
-            empty($_POST["new-password"]) ||
-            empty($_POST["new-password-confirmation"])
-        ) {
+        if (empty($_POST["old-password"]) || empty($_POST["new-password"]) || empty($_POST["new-password-confirmation"])) {
             $changePasswordError = FORM_NOT_FILLED;
         } else {
             $oldPassword = $_POST["old-password"];
@@ -64,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($changePasswordError)) {
         # TODO: Databasefil
         require_once "DATABASEFIL";
-        require_once "/inc/db/queries/user-management.php";
+        require_once "inc/db/queries/user-management.php";
 
         $resultPassword = getPassword($conn, $id);
 
@@ -77,8 +74,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
             $changePasswordError = WRONG_PASSWORD;
         }
-    } else {
-        $changePasswordError = DATABASE_ERROR;
     }
 }
 
@@ -96,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body>
 
-<?php require_once "modules/header.php" ?>
+<?php require_once "inc/modules/header.php" ?>
 
 <main>
     <div class="module-wrapper">
@@ -113,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <label for="new-password">Nytt passord</label>
                     <input type="password" name="new-password" id="new-password" required>
                 </div>
-                <div class="change-password-form-new-password">
+                <div class="change-password-form-new-password-confirmation">
                     <label for="new-password-confirmation">Bekreft nytt passord</label>
                     <input type="password" name="new-password-confirmation" id="new-password-confirmation" required>
                 </div>
@@ -130,7 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     </div>
 </main>
 
-<?php require_once "modules/footer.php" ?>
+<?php require_once "inc/modules/footer.php" ?>
 
 </body>
 
