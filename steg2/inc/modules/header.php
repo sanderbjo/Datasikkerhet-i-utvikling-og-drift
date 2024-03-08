@@ -8,9 +8,11 @@
 
             if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true) {
                 echo "<li class'nav-right'><a href='/user-settings.php'>Instillinger</a></li>";
-                echo "<li class'nav-right'>";
-                require "logout-button.php";
-                echo "</li>";
+                echo "<li class'nav-right'>"; require "logout-button.php"; echo "</li>";
+            } else {
+                echo "<li class'nav-right'><a href='/signup-student.php'>Registrer student</a></li>";
+                echo "<li class'nav-right'><a href='/signup-lecturer.php'>Registrer foreleser</a></li>";
+                echo "<li class'nav-right'><a href='/login.php'>Logg inn</a></li>";
             }
 
             ?>
