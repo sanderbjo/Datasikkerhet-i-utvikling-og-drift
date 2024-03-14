@@ -54,7 +54,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($signupError)) {
         
         if (addUser($conn, $email, $password, $name, $role)) {
-            $id = getId($conn, $email);
+            # $id = getId($conn, $email);
+            $id = $conn->insert_id;
             $loginData = [];
             $loginData["id"] = $id;
             $loginData["email"] = $email;

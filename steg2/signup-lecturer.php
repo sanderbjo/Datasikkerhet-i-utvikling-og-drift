@@ -1,5 +1,8 @@
 <?php
 
+# TODO: Regex-validering på emnekode
+# /^(?!-)(?!.*--)[a-z1-9-]{2,10}(?<!-)$/i
+
 require_once "inc/validate/session-validate.php";
 require_once "inc/password/password.php";
 # TODO: Databasefil
@@ -65,11 +68,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     if (empty($signupError)) {
         $conn->begin_transaction();
-        if (addUser($conn, $email, $password, $name, $role) &&
-                addSubject($conn, $subjectName, $subjectCode, $subjectPin)) {
+        $r1 = addUser($conn, $email, $password, $name, $role);
+        # $id = getId($conn, $email);
+        $id = $conn->insert_id;
+        $r2 = addSubject($conn, $subjectName, $subjectCode, $subjectPin, $id);
+        if ($r1 && $r2) {
             $conn->commit();
-            
-            $id = getId($conn, $email);
 
             if ($_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE) {
                 $imageId = uniqid("", true);

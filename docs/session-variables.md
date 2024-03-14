@@ -41,3 +41,7 @@ Auth tokens som må valideres for at en form skal være gyldig.
 - csrf-login
 - csrf-logout
 - csrf-signup
+
+## anon-subject (int[])
+
+En liste med IDer på emner hvor en bruker som ikke er logget inn skal ha tilgang til
