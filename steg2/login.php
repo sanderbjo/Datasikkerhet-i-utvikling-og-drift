@@ -1,6 +1,6 @@
 <?php
 
-require_once "inc/validate/session-validate.php";
+require_once "inc/validation/session-validation.php";
 
 notLoggedInOrRedirect();
 
@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (empty($loginError)) {
         # TODO: Databasefil
-        require "DATABASEFIL";
+        # require "DATABASEFIL";
         require_once "inc/db/queries/user-management.php";
         require_once "inc/password/password.php";
 

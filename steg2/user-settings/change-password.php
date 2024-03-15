@@ -60,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (empty($changePasswordError)) {
         # TODO: Databasefil
-        require_once "DATABASEFIL";
+        # require_once "DATABASEFIL";
         require_once "inc/db/queries/user-management.php";
 
         $resultPassword = getPassword($conn, $id);

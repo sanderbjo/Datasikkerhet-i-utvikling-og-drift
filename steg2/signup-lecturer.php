@@ -1,9 +1,9 @@
 <?php
 
-require_once "inc/validate/session-validate.php";
+require_once "inc/validation/session-validation.php";
 require_once "inc/password/password.php";
 # TODO: Databasefil
-require "DATABASEFIL";
+# require "DATABASEFIL";
 
 
 notLoggedInOrRedirect();
