@@ -3,10 +3,10 @@
 # TODO: Regex-validering på emnekode
 # /^(?!-)(?!.*--)[a-z1-9-]{2,10}(?<!-)$/i
 
-require_once "inc/validate/session-validate.php";
+require_once "inc/validation/session-validation.php";
 require_once "inc/password/password.php";
 # TODO: Databasefil
-require "DATABASEFIL";
+# require "DATABASEFIL";
 
 
 notLoggedInOrRedirect();

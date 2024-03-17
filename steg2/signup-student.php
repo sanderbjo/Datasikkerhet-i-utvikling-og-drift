@@ -1,9 +1,9 @@
 <?php
 
-require_once "inc/validate/session-validate.php";
+require_once "inc/validation/session-validation.php";
 require_once "inc/password/password.php";
 # TODO: Databasefil
-require "DATABASEFIL";
+# require "DATABASEFIL";
 
 
 notLoggedInOrRedirect();
@@ -93,7 +93,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2 class="module-header">Studentregistrering</h2>
             <form method="post" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="signup-student-form">
                 <?php if (!empty($signupError)) echo "<div class='center'>$signupError</div>"; ?>
-                <h3>Brukerkonto</h3>
                 <div class="signup-form-name">
                     <label for="name">Navn</label>
                     <input type="text" name="name" id="name" required value="<?= htmlspecialchars($name); ?>">
