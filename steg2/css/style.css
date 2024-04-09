@@ -1,0 +1,245 @@
+* {
+    box-sizing: border-box;
+    font-family: arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    /*border: 0;*/
+    list-style: none;
+}
+
+a {
+    color: royalblue;
+}
+
+button {
+    cursor: pointer;
+}
+
+header {
+    display: flex;
+    border-bottom: 1px lightgrey solid;
+}
+
+header nav {
+    flex-grow: 1;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    padding: 0 1rem;
+}
+
+header>div {
+    display: flex;
+    align-items: center;
+}
+
+header li {
+    display: block;
+}
+
+header a {
+    display: block;
+    padding: 1rem;
+}
+
+header button {
+    display: block;
+    background: none;
+    border: none;
+    padding: 1rem;
+    font-size: 1em;
+    color: royalblue;
+    text-decoration-line: underline;
+}
+
+#navbar-toggle img {
+    display: block;
+    aspect-ratio: 1;
+    width: 3rem;
+}
+
+#navbar-toggle {
+    display: block;
+    margin-left: auto;
+    margin-right: 1rem;
+    height: 3rem;
+    padding: 0;
+}
+
+header nav ul {
+    display: none;
+    list-style: none;
+    position: absolute;
+    top: 3rem;
+    left: 0;
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+    background: white;
+    z-index: 20;
+}
+
+header nav li {
+    border-top: 1px solid lightgray;
+}
+
+header nav li:last-child {
+    border-bottom: 1px solid lightgray;
+}
+
+@media only screen and (min-width: 800px) {
+    #navbar-toggle {
+        display: none;
+    }
+
+    header nav ul {
+        display: flex !important;
+        position: static;
+        flex-direction: row;
+        background: unset;
+    }
+
+    .nav-right {
+        margin-left: auto;
+    }
+
+    header nav li {
+        border: none;
+    }
+
+    header nav li:last-child {
+        border: none;
+    }
+
+    header a:hover,
+    header button:hover {
+        background: lightgrey;
+    }
+}
+
+.module-wrapper {
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+    padding-top: 2rem;
+}
+
+[class$="module"] {
+    width: 100%;
+    max-width: 20rem;
+    align-self: center;
+    justify-self: center;
+}
+
+[class$="module"] [class$="form"] {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+[class$="module"] [class$="form"] div {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+[class$="module"] [class$="form"] div:not(:last-child) {
+    margin-bottom: 1rem;
+}
+
+.login-form-password a {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.module-header {
+    text-align: center;
+    font-weight: bold;
+}
+
+[class$="error"] {
+    color: darkred;
+    font-weight: bold;
+}
+
+[class$="success"] {
+    color: limegreen;
+    /*color: lawngreen;*/
+    font-weight: bold;
+}
+
+[class$="module"]>[class*="options"]>div {
+    margin-bottom: 1rem;
+}
+
+[class$="module"]>[class*="options"]>div>p {
+    margin-bottom: 0.5rem;
+}
+
+.center {
+    text-align: center;
+}
+
+.wrapper {
+    padding: 2rem;
+}
+
+.wrapper>section,
+.wrapper>article {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 900px;
+}
+
+article section {
+    margin-bottom: 1rem;
+}
+
+section h2,
+article h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+article h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+article>ul,
+article section>ul,
+article p {
+    margin-bottom: 0.5rem;
+}
+
+article ul>li {
+    margin-top: 0.2rem;
+}
+
+article ul>li>span {
+    display: flex;
+}
+
+article ul>li>span>span {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+article ul>li>span>span:after {
+    content: '';
+    border-bottom: 2px dotted lightgrey;
+    flex: 1;
+    margin: 0 10px;
+}
+
+ul.square {
+    padding-left: 40px;
+}
+
+ul.square>li {
+    list-style-type: square;
+    list-style-position: outside;
+}

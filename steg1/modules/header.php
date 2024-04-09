@@ -17,9 +17,9 @@
     </div>
     <div class="user-options">
         <?php
-        if (isset($_SESSION["loggedIn"]) || $_SESSION["loggedIn"] === true)
+        if (isset($_SESSION["loggedIn"]) && $_SESSION["loggedIn"] === true)
             require_once "header-modules/user-options-logged-in.php";
-        elseif (isset($_SESSION["anon"]) || $_SESSION["anon"] === true)
+        elseif (isset($_SESSION["anon"]) && $_SESSION["anon"] === true)
             require_once "header-modules/user-options-anon-logged-in.php";
         else
             require_once "header-modules/user-options-not-logged-in.php";
