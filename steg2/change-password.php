@@ -1,7 +1,7 @@
 <?php
 
 require_once "inc/validation/session-validation.php";
-require_once "inc/password/password.php";
+require_once "inc/pw/password.php";
 
 loggedInOrRedirect();
 
@@ -59,8 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if (empty($changePasswordError)) {
-        # TODO: Databasefil
-        # require_once "DATABASEFIL";
+        require "inc/db/conn/db.php";
         require_once "inc/db/queries/user-management.php";
 
         $resultPassword = getPassword($conn, $id);

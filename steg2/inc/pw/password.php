@@ -12,12 +12,12 @@ function validatePassword(string $password) {
 }
 
 function pepperPassword(string $password) {
-    $pepperFilePath = "/inc/password/pepper.txt";
+    # $pepperFilePath = dirname(__DIR__)."/pepper.txt";
 
-    $pepperFile = fopen($pepperFilePath, "r");
-    $pepper = fread($pepperFile, filesize($pepperFilePath));
-    fclose($pepperFile);
-    
+    # $pepperFile = fopen($pepperFilePath, "r");
+    # $pepper = fread($pepperFile, filesize($pepperFilePath));
+    # fclose($pepperFile);
+    $pepper = "859f6639726e44eb51ee241d3a2610e37122a03381f4b31476e06885cef18461";
     $pepperedPassword = hash_hmac("sha256", $password, $pepper);
     return $pepperedPassword;
 }
