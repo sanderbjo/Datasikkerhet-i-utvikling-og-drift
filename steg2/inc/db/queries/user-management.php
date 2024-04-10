@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__DIR__)."../../pw/password.php";
+require_once __DIR__."/../../pw/password.php";
 
 function getPassword(\mysqli $conn, int $id) {
     $password = "";

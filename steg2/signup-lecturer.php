@@ -7,6 +7,7 @@ require_once "inc/validation/session-validation.php";
 require_once "inc/validation/input-validation.php";
 require_once "inc/pw/password.php";
 require_once "inc/db/queries/user-management.php";
+require_once "inc/db/queries/subject-management.php";
 require "inc/db/conn/db.php";
 
 
@@ -79,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE) {
                 $imageId = uniqid("", true);
                 setImage($conn, $id, $imageId);
-                $uploadDirectory = "/uploads/";
+                $uploadDirectory = __DIR__ . "/uploads/";
                 $filePath = $uploadDirectory . $imageId . ".jpg";
                 move_uploaded_file($_FILES["image"]["tmp_name"], $filePath);
 

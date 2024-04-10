@@ -10,7 +10,7 @@ define("IV_ERR_NOT_A_VALID_EMAIL", 3);
 define("IV_ERR_NOT_A_VALID_SUBJECT_PIN", 4);
 
 
-function validateImage(string $file) {
+function validateImage($file) {
     # Gyldige filtyper
     $allowedMimeTypes = array(/*'image/gif',*/ 'image/jpeg', 'image/png');
     $allowedExifTypes = array(/*IMAGETYPE_GIF,*/ IMAGETYPE_JPEG, IMAGETYPE_PNG);
@@ -22,7 +22,7 @@ function validateImage(string $file) {
         return IV_ERR_NOT_A_VALID_IMAGE;
     }
 
-    if (!in_array(exif_imagetype($file), $allowedExifTypes))
+    if (!in_array(exif_imagetype($file["tmp_name"]), $allowedExifTypes))
         return IV_ERR_NOT_A_VALID_IMAGE;
 
     return IV_ERR_OK;

@@ -15,7 +15,7 @@ function checkIfSubjectExists(\mysqli $conn, string $code) {
 
 function addSubject(\mysqli $conn, string $name, string $code, string $pin, int $id) {
     $stmt = $conn->prepare("INSERT INTO subject (name, code, pin, user_id) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("sss", $name, $code, $pin, $id);
+    $stmt->bind_param("sssi", $name, $code, $pin, $id);
     $stmt->execute();
     
     if ($stmt->affected_rows === 1)
