@@ -12,7 +12,7 @@ function validatePassword(string $password) {
 }
 
 function pepperPassword(string $password) {
-    $pepperFilePath = "/inc/password/pepper.txt";
+    $pepperFilePath = __DIR__ . "/pepper.txt";
 
     $pepperFile = fopen($pepperFilePath, "r");
     $pepper = fread($pepperFile, filesize($pepperFilePath));

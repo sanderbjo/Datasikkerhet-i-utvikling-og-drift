@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . "/../validation/session-validation.php";
+
 if (!isset($_SESSION["csrf-logout"]))
     $_SESSION["csrf-logout"] = generateAuthToken();
 ?>

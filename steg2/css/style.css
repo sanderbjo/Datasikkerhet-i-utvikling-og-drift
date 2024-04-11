@@ -118,11 +118,20 @@ header nav li:last-child {
     }
 }
 
+main {
+    min-height: calc(100vh - 4rem);
+}
+
+footer {
+    border-top: 1px lightgrey solid;
+}
+
 .module-wrapper {
     display: flex;
     flex-direction: column;
     /*justify-content: center;*/
     padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
 [class$="module"] {

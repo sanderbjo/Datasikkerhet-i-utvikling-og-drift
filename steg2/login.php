@@ -1,6 +1,7 @@
 <?php
 
 require_once "inc/validation/session-validation.php";
+require_once "inc/validation/input-validation.php";
 
 notLoggedInOrRedirect();
 
@@ -33,10 +34,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if (empty($loginError)) {
-        # TODO: Databasefil
-        # require "DATABASEFIL";
+        require "inc/db/conn/db.php";
         require_once "inc/db/queries/user-management.php";
-        require_once "inc/password/password.php";
+        require_once "inc/pw/password.php";
 
         $queryResult = loginQuery($conn, $email);
         if (!empty($queryResult) && password_verify(pepperPassword($password), $queryResult["password"])) {
@@ -76,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <h2 class="module-header">Logg inn</h2>
             <form method="post" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="login-form">
                 <input type="hidden" name="auth-token" value="<?= $_SESSION["csrf-login"]; ?>">
-                <?php if (!empty($loginError)) echo "<div class='center'>$loginError></div>"; ?>
+                <?php if (!empty($loginError)) echo "<div class='center'>$loginError</div>"; ?>
                 <div class="login-form-email">
                     <label for="email">E-post</label>
                     <input type="email" name="email" id="email" required value="<?= htmlspecialchars($email); ?>">

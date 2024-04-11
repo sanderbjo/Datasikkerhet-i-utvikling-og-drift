@@ -1,6 +1,6 @@
 <?php
 
-require_once "inc/validation/login-validation.php";
+require_once "inc/validation/session-validation.php";
 
 loggedInOrRedirect();
 
@@ -18,20 +18,20 @@ loggedInOrRedirect();
 
 <body>
 
-<?php require_once "/inc/modules/header.php" ?>
+<?php require_once "inc/modules/header.php" ?>
 
 <main>
     <div class="wrapper">
         <section>
             <h2>Brukerinnstillinger</h2>
             <ul>
-                <li><a href="/user-settings/change-password.php">Bytt passord</a></li>
+                <li><a href="/change-password.php">Bytt passord</a></li>
             </ul>
         </section>
     </div>
 </main>
 
-<?php require_once "/inc/modules/footer.php" ?>
+<?php require_once "inc/modules/footer.php" ?>
 
 </body>
 

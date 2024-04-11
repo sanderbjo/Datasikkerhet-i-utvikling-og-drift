@@ -27,7 +27,7 @@ function generateAuthToken() {
 }
 
 function login(array $data) {
-    if (isset($data["id"]) || isset($data["email"]) || isset($data["name"]) || isset($data["role"]))
+    if (!isset($data["id"]) || !isset($data["email"]) || !isset($data["name"]) || !isset($data["role"]))
         return false;
 
     $_SESSION["loggedIn"] = true;
