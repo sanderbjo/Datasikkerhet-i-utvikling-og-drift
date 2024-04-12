@@ -2,6 +2,16 @@
 
 session_start();
 
+if (isset($_SESSION["role"])) {
+    if ($_SESSION["role"] === 1) {
+        require_once "foreleser.php";
+        exit;
+    } elseif ($_SESSION["role"] === 2) {
+        require_once "student.php";
+        exit;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
