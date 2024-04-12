@@ -1,5 +1,9 @@
 <?php
+
 require_once "inc/validation/session-validation.php";
+
+isLecturerOrRedirect();
+
 ?>
 
 <!DOCTYPE html>

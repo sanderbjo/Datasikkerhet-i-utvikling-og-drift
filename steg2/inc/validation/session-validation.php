@@ -38,3 +38,17 @@ function login(array $data) {
 
     return true;
 }
+
+function isLecturerOrRedirect() {
+    if (!isset($_SESSION["role"]) || $_SESSION["role"] !== 1) {
+        header("Location: /login.php");
+        exit;
+    }
+}
+
+function isStudentOrRedirect() {
+    if (!isset($_SESSION["role"]) || $_SESSION["role"] !== 2) {
+        header("Location: /login.php");
+        exit;
+    }
+}
