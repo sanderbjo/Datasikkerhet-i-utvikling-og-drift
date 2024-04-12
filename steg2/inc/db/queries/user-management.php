@@ -1,10 +1,10 @@
 <?php
 
-require_once "../../password/password.php";
+require_once __DIR__."/../../pw/password.php";
 
 function getPassword(\mysqli $conn, int $id) {
     $password = "";
-    $stmt = $conn->prepare("SELECT 'password' FROM user WHERE id = ?");
+    $stmt = $conn->prepare("SELECT password FROM user WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $stmt->store_result();
@@ -19,7 +19,7 @@ function getPassword(\mysqli $conn, int $id) {
 # Passordet må være i plaintext
 function setPassword(\mysqli $conn, int $id, string $password) {
     $password = hashPassword($password);
-    $stmt = $conn->prepare("UPDATE user SET 'password' = ? WHERE id = ?");
+    $stmt = $conn->prepare("UPDATE user SET password = ? WHERE id = ?");
     $stmt->bind_param("si", $password, $id);
     $stmt->execute();
     if ($stmt->affected_rows === 1)
@@ -33,7 +33,7 @@ function setPassword(\mysqli $conn, int $id, string $password) {
 function loginQuery(\mysqli $conn, string $email) {
     $data = [];
 
-    $stmt = $conn->prepare("SELECT id, email, 'password', 'name', role_id FROM user WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id, email, password, name, role_id FROM user WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
@@ -48,7 +48,7 @@ function loginQuery(\mysqli $conn, string $email) {
 function addUser(\mysqli $conn, string $email, string $password, string $name, int $role) {
     $hashedPassword = hashPassword($password);
 
-    $stmt = $conn->prepare("INSERT INTO user ('name', email, 'password', role_id) VALUES (?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO user (name, email, password, role_id) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("sssi", $name, $email, $hashedPassword, $role);
     $stmt->execute();
 
@@ -89,7 +89,7 @@ function getId(\mysqli $conn, string $email) {
 }
 
 function setImage(\mysqli $conn, int $id, string $image) {
-    $stmt = $conn->prepare("UPDATE user SET 'image' = ? WHERE id = ?");
+    $stmt = $conn->prepare("UPDATE user SET image = ? WHERE id = ?");
     $stmt->bind_param("si", $image, $id);
     $stmt->execute();
     if ($stmt->affected_rows === 1)
@@ -102,7 +102,7 @@ function setImage(\mysqli $conn, int $id, string $image) {
 
 function getAllLecturers(\mysqli $conn) {
     $result = [];
-    $query = "SELECT id, 'name', 'image' FROM user WHERE role_id = 1";
+    $query = "SELECT id, name, image FROM user WHERE role_id = 1";
     $result = $conn->query($query);
     return $result;
 }

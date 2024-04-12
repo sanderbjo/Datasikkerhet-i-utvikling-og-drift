@@ -4,9 +4,11 @@
 # /^(?!-)(?!.*--)[a-z1-9-]{2,10}(?<!-)$/i
 
 require_once "inc/validation/session-validation.php";
-require_once "inc/password/password.php";
-# TODO: Databasefil
-# require "DATABASEFIL";
+require_once "inc/validation/input-validation.php";
+require_once "inc/pw/password.php";
+require_once "inc/db/queries/user-management.php";
+require_once "inc/db/queries/subject-management.php";
+require "inc/db/conn/db.php";
 
 
 notLoggedInOrRedirect();
@@ -78,7 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE) {
                 $imageId = uniqid("", true);
                 setImage($conn, $id, $imageId);
-                $uploadDirectory = "/uploads/";
+                $uploadDirectory = __DIR__ . "/uploads/";
                 $filePath = $uploadDirectory . $imageId . ".jpg";
                 move_uploaded_file($_FILES["image"]["tmp_name"], $filePath);
 
@@ -124,6 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2 class="module-header">Foreleserregistrering</h2>
             <form method="post" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>"
                   class="signup-lecturer-form" enctype="multipart/form-data">
+                <input type="hidden" name="auth-token" value="<?= $_SESSION["csrf-signup"]; ?>">
                 <?php if (!empty($signupError)) echo "<div class='center'>$signupError</div>"; ?>
                 <h3>Brukerkonto</h3>
                 <div class="signup-form-name">

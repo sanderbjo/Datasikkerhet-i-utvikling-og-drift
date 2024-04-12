@@ -1,3 +1,5 @@
 <footer>
-    <span>Gruppe 4</span>
+    <div class="wrapper">
+        <span>Bottom text</span>
+    </div>
 </footer>

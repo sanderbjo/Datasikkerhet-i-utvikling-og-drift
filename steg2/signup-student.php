@@ -1,9 +1,10 @@
 <?php
 
 require_once "inc/validation/session-validation.php";
-require_once "inc/password/password.php";
-# TODO: Databasefil
-# require "DATABASEFIL";
+require_once "inc/validation/input-validation.php";
+require_once "inc/pw/password.php";
+require_once "inc/db/queries/user-management.php";
+require "inc/db/conn/db.php";
 
 
 notLoggedInOrRedirect();
@@ -92,6 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="signup-student-module">
             <h2 class="module-header">Studentregistrering</h2>
             <form method="post" action="<?= htmlspecialchars($_SERVER["PHP_SELF"]); ?>" class="signup-student-form">
+                <input type="hidden" name="auth-token" value="<?= $_SESSION["csrf-signup"]; ?>">
                 <?php if (!empty($signupError)) echo "<div class='center'>$signupError</div>"; ?>
                 <div class="signup-form-name">
                     <label for="name">Navn</label>
