@@ -18,6 +18,6 @@ $formatter = new LineFormatter("%level_name%: %message% %extra.ip% %extra.email%
 
 
 // Add a handler for access logs (INFO level only) with the custom formatter
-$accessHandler = new StreamHandler('access.log', Logger::INFO);
+$accessHandler = new StreamHandler('../../../log/dsiku/access.log', Logger::INFO);
 $accessHandler->setFormatter($formatter);
 $log->pushHandler($accessHandler);

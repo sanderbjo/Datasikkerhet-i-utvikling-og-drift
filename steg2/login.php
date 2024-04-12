@@ -19,7 +19,7 @@ function logEvent($log, $email, $message) {
         'ip' => $_SERVER['REMOTE_ADDR'],
         'timestamp' => date('Y-m-d H:i:s'),
         'email' => $email,
-        'session_id' => session_id()
+        'session_id' => hash('sha256', session_id())
     ]);
 }
 
