@@ -11,8 +11,13 @@ use Monolog\Handler\StreamHandler;
 // Create a new Logger instance with a channel name
 $log = new Logger('my_logger');
 
-// Add a handler to the logger that writes log messages to a file
-$log->pushHandler(new StreamHandler('app.log', Logger::INFO));
+// Create a formatter with a custom log format
+$formatter = new LineFormatter("[%datetime%] %extra.ip% %level_name%: %message% %context%\n", "Y-m-d H:i:s");
+
+// Add a handler for access logs (INFO level only) with the custom formatter
+$accessHandler = new StreamHandler('access.log', Logger::INFO);
+$accessHandler->setFormatter($formatter);
+$log->pushHandler($accessHandler);
 
 // Log a test message
 $log->info('This is a test message from Monolog!');

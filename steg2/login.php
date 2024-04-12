@@ -2,12 +2,15 @@
 
 require_once "inc/validation/session-validation.php";
 require_once "inc/validation/input-validation.php";
+require "log-handler.php";
 
 notLoggedInOrRedirect();
 
 define("WRONG_EMAIL_OR_PASSWORD",   "<p class='error'>Feil e-post eller passord</p>");
 define("DATABASE_ERROR",            "<p class='error'>Feil i database</p>");
 define("GENERIC_ERROR",             "<p class='error'>En feil har oppstått. Prøv igjen</p>");
+
+$log->info('Login attempt', ['ip' => $_SERVER['REMOTE_ADDR'], 'timestamp' => date('Y-m-d H:i:s')]);
 
 $loginError = "";
 $email = $password = "";
