@@ -10,8 +10,6 @@ define("WRONG_EMAIL_OR_PASSWORD",   "<p class='error'>Feil e-post eller passord<
 define("DATABASE_ERROR",            "<p class='error'>Feil i database</p>");
 define("GENERIC_ERROR",             "<p class='error'>En feil har oppstått. Prøv igjen</p>");
 
-$log->info('Login attempt', ['ip' => $_SERVER['REMOTE_ADDR'], 'timestamp' => date('Y-m-d H:i:s')]);
-
 $loginError = "";
 $email = $password = "";
 
@@ -51,6 +49,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
         } else {
             $loginError = WRONG_EMAIL_OR_PASSWORD;
+            $log->info('Login attempt', [
+                'ip' => $_SERVER['REMOTE_ADDR'],
+                'timestamp' => date('Y-m-d H:i:s'),
+                'email' => $email,
+                'user_agent_short' => $_SERVER['HTTP_USER_AGENT'],
+                'session-id' => session_id()
+            ]);
         }
     }
 }
