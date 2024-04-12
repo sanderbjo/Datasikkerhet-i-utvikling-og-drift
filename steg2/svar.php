@@ -1,5 +1,5 @@
 <?php
-require_once "includes/prof-validate.php"
+require_once "inc/validation/session-validation.php";
 # TODO: Skal svar være en egen side?
 # Akuratt nå må brukeren trykke på en link for å gå tilbake men vi kan bare
 # sende dem tilbake etter at vi har registrert svaret dems.
@@ -18,13 +18,13 @@ require_once "includes/prof-validate.php"
 <body>
 
 <?php
-require_once "modules/header.php";
+require_once "inc/modules/header.php";
 ?>
 
 <?php
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    require "includes/db-connection.php";
+    require "inc/db/conn/db.php";
 
     $sql = "INSERT INTO `svar` (`id`, `innhold`, `melding_id`, `bruker_id`) VALUES (?, ?, ?, ?)";
     

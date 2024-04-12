@@ -1,5 +1,5 @@
 <?php
-require_once "includes/prof-validate.php";
+require_once "inc/validation/session-validation.php";
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +15,7 @@ require_once "includes/prof-validate.php";
 <body>
 
 <?php
-require_once "modules/header.php"
+require_once "inc/modules/header.php"
 ?>
 
 <main>
@@ -23,7 +23,7 @@ require_once "modules/header.php"
         <section>
             <h2>Foreleser</h2>
             <?php
-            require "includes/db-connection.php";
+            require "inc/db/conn/db.php";
 
             // Hent emner tilknyttet foreleseren
             $id = $_SESSION["id"];

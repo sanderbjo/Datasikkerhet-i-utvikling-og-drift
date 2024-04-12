@@ -1,5 +1,5 @@
 <?php
-require_once "includes/validate.php";
+require_once "inc/validation/session-validation.php";
 ?>
 <!DOCTYPE html>
 <html lang="nb">
@@ -14,7 +14,7 @@ require_once "includes/validate.php";
 <body>
 
 <?php
-require_once "modules/header.php"
+require_once "inc/modules/header.php"
 ?>
 
 <main>
@@ -22,7 +22,7 @@ require_once "modules/header.php"
         <section>
             <h2>Emner</h2>
             <?php
-            require "includes/db-connection.php";
+            require "inc/db/conn/db.php";
 
             if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 if (!empty($_POST["emnekode"]) && !empty($_POST["melding"])) {
