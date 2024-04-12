@@ -24,10 +24,9 @@ require_once "inc/modules/header.php"
             <h2>Foreleser</h2>
             <?php
             require "inc/db/conn/db.php";
-
             // Hent emner tilknyttet foreleseren
             $id = $_SESSION["id"];
-            $sql = "SELECT bruker_id, emnekode, navn FROM emne WHERE bruker_id = ?";
+            $sql = "SELECT user_id, code, name FROM subject WHERE user_id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $id);
             $stmt->execute();
@@ -35,11 +34,11 @@ require_once "inc/modules/header.php"
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    $emnekode = $row["emnekode"];
+                    $emnekode = $row["code"];
 
                     // Her kan du utføre handlinger som krever $emnekode
                     echo "Emnekode: " . htmlspecialchars($emnekode) . "<br>";
-                    echo "Emnenavn: " . htmlspecialchars($row["navn"]) . "<br>";
+                    echo "Emnenavn: " . htmlspecialchars($row["name"]) . "<br>";
 
                     // Hent bilde basert på foreleserens ID
                     $foreleserId = $_SESSION["id"];
@@ -64,10 +63,10 @@ require_once "inc/modules/header.php"
             }
 
             // Hent meldinger tilknyttet emnet
-            $stmt = $conn->prepare("SELECT m.id, m.innhold, m.emne_emnekode, COUNT(r.melding_id) AS antall_rapporteringer
-                                    FROM melding AS m
-                                    LEFT JOIN rapporterte_meldinger AS r ON m.id = r.melding_id
-                                    WHERE m.emne_emnekode = ?
+            $stmt = $conn->prepare("SELECT m.id, m.content, m.subject_id, COUNT(r.message_id) AS antall_rapporteringer
+                                    FROM message AS m
+                                    LEFT JOIN report AS r ON m.id = r.message_id
+                                    WHERE m.subject_id = ?
                                     GROUP BY m.id");
             $stmt->bind_param("s", $emnekode);
             $stmt->execute();
@@ -75,8 +74,8 @@ require_once "inc/modules/header.php"
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    echo "Melding: " . htmlspecialchars($row["innhold"]) . "<br>";
-                    echo "Emnekode: " . htmlspecialchars($row["emne_emnekode"]) . "<br>";
+                    echo "Melding: " . htmlspecialchars($row["content"]) . "<br>";
+                    echo "Emnekode: " . htmlspecialchars($row["subject_id"]) . "<br>";
                     echo "Antall rapporteringer: " . htmlspecialchars($row["antall_rapporteringer"]) . "<br>";
 
                     // Vis en visuell indikator hvis meldingen er rapportert
