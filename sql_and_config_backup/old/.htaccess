@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteRule ^steg1$ login.php [L]
+RewriteRule ^steg1/$ login.php [L]
+RewriteRule ^steg1/api$ api/dokumentasjon.php [L]

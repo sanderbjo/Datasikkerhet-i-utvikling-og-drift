@@ -1,4 +1,7 @@
 RewriteEngine On
-RewriteRule ^steg1$ login.php [L]
-RewriteRule ^steg1/$ login.php [L]
-RewriteRule ^steg1/api$ api/dokumentasjon.php [L]
+RewriteRule ^steg2$ login.php [L]
+RewriteRule ^steg2/$ login.php [L]
+RewriteRule ^steg2/api$ api/dokumentasjon.php [L]
+#RewriteRule ^$ login.php [L]
+RedirectMatch 404 ^/inc(/.*|$)
+RedirectMatch 404 ^/priv(/.*|$)
