@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $conn->commit();
 
             if ($_FILES["image"]["error"] !== UPLOAD_ERR_NO_FILE) {
-                $imageId = uniqid("", true);
+                $imageId = uniqid("AVTR", true);
                 setImage($conn, $id, $imageId);
                 $uploadDirectory = __DIR__ . "/uploads/";
                 $filePath = $uploadDirectory . $imageId . ".jpg";
