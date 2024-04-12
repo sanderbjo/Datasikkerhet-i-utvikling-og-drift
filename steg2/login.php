@@ -12,6 +12,17 @@ define("GENERIC_ERROR",             "<p class='error'>En feil har oppstÃ¥tt. PrÃ
 
 $loginError = "";
 $email = $password = "";
+$loginAttempts = 0;
+
+function logEvent($log, $email, $message) {
+    $log->info($message, [
+        'ip' => $_SERVER['REMOTE_ADDR'],
+        'timestamp' => date('Y-m-d H:i:s'),
+        'email' => $email,
+        'session_id' => session_id()
+    ]);
+}
+
 
 if (!isset($_SESSION["csrf-login"]))
     $_SESSION["csrf-login"] = generateAuthToken();
@@ -19,11 +30,13 @@ if (!isset($_SESSION["csrf-login"]))
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (strcmp($_POST["auth-token"], $_SESSION["csrf-login"]) !== 0) {
         $loginError = GENERIC_ERROR;
+        logEvent($log, $email, "Login error: ");
     } else {
         $_SESSION["csrf-login"] = generateAuthToken();
 
         if (empty($_POST["email"]) || empty($_POST["password"])) {
             $loginError = WRONG_EMAIL_OR_PASSWORD;
+            logEvent($log, $email, "Login error (wrong email or password): ");
         } else {
             $email = $_POST["email"];
             $password = $_POST["password"];
@@ -31,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $email = trim($email);
             if (validateEmail($email) !== IV_ERR_OK)
                 $loginError = WRONG_EMAIL_OR_PASSWORD;
+                logEvent($log, $email, "Login error (wrong email or password): ");
         }
     }
 
@@ -43,19 +57,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (!empty($queryResult) && password_verify(pepperPassword($password), $queryResult["password"])) {
             if (login($queryResult)) {
                 header("Location: /");
+                logEvent($log, $email, "Login successful: ");
                 exit;
             } else {
                 $loginError = GENERIC_ERROR;
+                logEvent($log, $email, "Login error: ");
             }
         } else {
             $loginError = WRONG_EMAIL_OR_PASSWORD;
-            $log->info('Login attempt', [
-                'ip' => $_SERVER['REMOTE_ADDR'],
-                'timestamp' => date('Y-m-d H:i:s'),
-                'email' => $email,
-                'user_agent_short' => $_SERVER['HTTP_USER_AGENT'],
-                'session-id' => session_id()
-            ]);
+            logEvent($log, $email, "Login error (wrong email or password): ");
         }
     }
 }

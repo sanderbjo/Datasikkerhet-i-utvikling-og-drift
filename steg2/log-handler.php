@@ -13,7 +13,9 @@ use Monolog\Formatter\LineFormatter;
 $log = new Logger('my_logger');
 
 // Create a formatter with a custom log format
-$formatter = new LineFormatter("[%datetime%] %extra.ip% %extra.email% % | User Agent: %user_agent_short% Session ID: %extra.session-id%", "Y-m-d H:i:s");
+$formatter = new LineFormatter("%level_name%: %message% %extra.ip% %extra.email% %extra.session_id% %context%\n", "d-m-Y H:i:s");
+
+
 
 // Add a handler for access logs (INFO level only) with the custom formatter
 $accessHandler = new StreamHandler('access.log', Logger::INFO);

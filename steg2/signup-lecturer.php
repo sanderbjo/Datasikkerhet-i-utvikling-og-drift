@@ -9,6 +9,7 @@ require_once "inc/pw/password.php";
 require_once "inc/db/queries/user-management.php";
 require_once "inc/db/queries/subject-management.php";
 require "inc/db/conn/db.php";
+require "log-handler.php";
 
 
 notLoggedInOrRedirect();
@@ -41,6 +42,12 @@ if (!isset($_SESSION["csrf-signup"]))
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (strcmp($_POST["auth-token"], $_SESSION["csrf-signup"]) !== 0) {
         $signupError = GENERIC_ERROR;
+        $log->info('Lecturer signup error:',[
+            'ip' => $_SERVER['REMOTE_ADDR'],
+            'timestamp' => date('Y-m-d H:i:s'),
+            'email' => $email,
+            'session_id' => session_id()
+        ]);
     } else {
         $_SESSION["csrf-signup"] = generateAuthToken();
         if (empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password']) || empty($_POST["password-confirmation"]) || empty($_POST['subject-name']) || empty($_POST['subject-code']) || empty($_POST['subject-pin'])) {
