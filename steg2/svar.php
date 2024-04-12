@@ -24,10 +24,9 @@ require_once "inc/modules/header.php";
 <?php
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    require "inc/db/conn/db.php";
+        require "inc/db/conn/db.php";
+    $sql = "INSERT INTO `answer` ( `content`, `message_id`, `user_id`) VALUES ( ?, ?, ?)";
 
-    $sql = "INSERT INTO `svar` (`id`, `innhold`, `melding_id`, `bruker_id`) VALUES (?, ?, ?, ?)";
-    
     try {
         if (!empty($_POST["id"]) && ! empty($_POST["svar"])) {
             $stmt = $conn->prepare($sql);
@@ -41,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             # foreign key og slette melding_id.
             # Tanker???
             # - Tobias
-            $stmt->bind_param("ssii", $_POST["id"], $_POST["svar"], $_POST["id"], $_SESSION["id"]);
+            $stmt->bind_param("sii", $_POST["svar"], $_POST["id"], $_SESSION["id"]);
             $stmt->execute();
             if ($stmt->affected_rows > 0) {
                 echo "Svaret ditt har blitt registrert";

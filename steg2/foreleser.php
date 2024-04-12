@@ -76,9 +76,15 @@ require_once "inc/modules/header.php"
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo "Melding: " . htmlspecialchars($row["content"]) . "<br>";
-                    echo "Emnekode: " . htmlspecialchars($row["subject_id"]) . "<br>";
+                    echo "Emnekode: " . htmlspecialchars($emnekode) . "<br>";
                     echo "Antall rapporteringer: " . htmlspecialchars($row["antall_rapporteringer"]) . "<br>";
-
+                    echo "<form action='svar.php' method='post'>
+                        Svar:
+                        <input type='text' name='svar'><br>
+                        <input type='hidden' name='emne_id' value='" . $row["subject_id"] . "'>
+                        <input type='hidden' name='id' value='" . $row["id"] . "'>
+                        <input type='submit' value='Send inn ditt svar!'>
+                    </form>";
                     // Vis en visuell indikator hvis meldingen er rapportert
                     if ($row["antall_rapporteringer"] > 0) {
                         echo "<p style='color: red;'>Denne meldingen er rapportert.</p>";
