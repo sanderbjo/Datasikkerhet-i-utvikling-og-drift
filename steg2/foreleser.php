@@ -26,7 +26,7 @@ require_once "inc/modules/header.php"
             require "inc/db/conn/db.php";
             // Hent emner tilknyttet foreleseren
             $id = $_SESSION["id"];
-            $sql = "SELECT user_id, code, name FROM subject WHERE user_id = ?";
+            $sql = "SELECT user_id, code, name,id FROM subject WHERE user_id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $id);
             $stmt->execute();
@@ -34,7 +34,8 @@ require_once "inc/modules/header.php"
 
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
-                    $emnekode = $row["code"];
+                        $emnekode = $row["code"];
+                        $emne_id = $row["id"];
 
                     // Her kan du utføre handlinger som krever $emnekode
                     echo "Emnekode: " . htmlspecialchars($emnekode) . "<br>";
@@ -68,7 +69,7 @@ require_once "inc/modules/header.php"
                                     LEFT JOIN report AS r ON m.id = r.message_id
                                     WHERE m.subject_id = ?
                                     GROUP BY m.id");
-            $stmt->bind_param("s", $emnekode);
+            $stmt->bind_param("s", $emne_id);
             $stmt->execute();
             $result = $stmt->get_result();
 

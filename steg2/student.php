@@ -23,15 +23,24 @@ require_once "inc/modules/header.php"
             <h2>Emner</h2>
             <?php
             require "inc/db/conn/db.php";
-
             if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 if (!empty($_POST["emnekode"]) && !empty($_POST["melding"])) {
                     $emnekode = $_POST["emnekode"];
                     $melding = $_POST["melding"];
                     $bruker_id = $_SESSION["id"];
 
-                    $stmt = $conn->prepare("INSERT INTO melding (innhold, bruker_id, emne_emnekode) VALUES (?, ?, ?)");
-                    $stmt->bind_param("sis", $melding, $bruker_id, $emnekode);
+                    $stmt = $conn->prepare("SELECT id from subject where code =?");
+                    $stmt->bind_param("s",$emnekode);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    if ($result->num_rows > 0) {
+                       while ($row = $result->fetch_assoc()) {
+                               $emne_id = $row["id"];
+                       }
+                    }
+
+                    $stmt = $conn->prepare("INSERT INTO message (content, user_id, subject_id) VALUES (?, ?, ?)");
+                    $stmt->bind_param("sis", $melding, $bruker_id, $emne_id);
                     if ($stmt->execute()) {
                         echo "Melding sendt suksessfullt!";
                     } else {
@@ -42,14 +51,15 @@ require_once "inc/modules/header.php"
                 }
             }
 
-            $sql = "SELECT emnekode, navn FROM emne;";
+            $sql = "SELECT code, name FROM subject;";
+
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
                 echo "<form method='post' action='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "'>";
                 echo "<select name='emnekode'>";
                 while ($row = $result->fetch_assoc()) {
-                    echo "<option value='" . $row["emnekode"]. "'>" . $row["navn"]. "</option>";
+                    echo "<option value='" . $row["code"]. "'>" . $row["name"]. "</option>";
                 }
                 echo "</select>";
                 echo "<textarea name='melding' placeholder='Skriv inn melding...'></textarea>";
