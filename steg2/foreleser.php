@@ -1,8 +1,34 @@
 <?php
 
 require_once "inc/validation/session-validation.php";
+require_once "inc/db/queries/user-management.php";
 
 isLecturerOrRedirect();
+
+
+require "inc/db/conn/db.php";
+// Hent emner tilknyttet foreleseren
+$id = $_SESSION["id"];
+$sql = "SELECT user_id, code, name, id FROM subject WHERE user_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $emnekode = $row["code"];
+        $emne_id = $row["id"];
+        $foreleserId = $_SESSION["id"];
+            
+        $subjectName = $row["name"];
+        $imageId = getImg($conn, $_SESSION["id"]);
+        if ($imageId === null || strcmp($imageId, "null") === 0 || strcmp($imageId, "") === 0) {
+            $imageId = "default";
+        }
+        $image = "uploads/" . $imageId . ".jpg"; 
+    }
+} 
 
 ?>
 
@@ -26,47 +52,16 @@ require_once "inc/modules/header.php"
     <div class="wrapper">
         <section>
             <h2>Foreleser</h2>
+            <div>
+                <ul>
+                    <li>Emnekode: <?= htmlspecialchars($emnekode); ?></li>
+                    <li>Emnekode: <?= htmlspecialchars($subjectName); ?></li>
+                </ul>
+                <img src="<?= htmlspecialchars($image) ?>">
+            </div>
+
             <?php
-            require "inc/db/conn/db.php";
-            // Hent emner tilknyttet foreleseren
-            $id = $_SESSION["id"];
-            $sql = "SELECT user_id, code, name,id FROM subject WHERE user_id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                        $emnekode = $row["code"];
-                        $emne_id = $row["id"];
-
-                    // Her kan du utføre handlinger som krever $emnekode
-                    echo "Emnekode: " . htmlspecialchars($emnekode) . "<br>";
-                    echo "Emnenavn: " . htmlspecialchars($row["name"]) . "<br>";
-
-                    // Hent bilde basert på foreleserens ID
-                    $foreleserId = $_SESSION["id"];
-                    $bildeStiJPG = "uploads/" . $foreleserId . ".jpg";
-                    $bildeStiPNG = "uploads/" . $foreleserId . ".png";
-                    $bildeStiGIF = "uploads/" . $foreleserId . ".gif";
-
-                    // Sjekk om bilde finnes
-                    if (file_exists($bildeStiJPG)) {
-                        echo "<img src='" . $bildeStiJPG . "' width='300' height='200' alt='Bilde av foreleser'><br>";
-                    } elseif (file_exists($bildeStiPNGGIF)){
-                        echo "<img src='" . $bildeStiPNG . "' width='300' height='200' alt='Bilde av foreleser'><br>";
-                    } elseif (file_exists($bildeStiGIF)) {
-                        echo "<img src='" . $bildeStiGIF . "' width='300' height='200' alt='Bilde av foreleser'><br>";
-                    } else {
-                        echo "Bilde ikke tilgjengelig<br>";
-                    }
-                }
-
-            } else {
-                echo "Ingen emner funnet for denne brukeren.";
-            }
-
+           
             // Hent meldinger tilknyttet emnet
             $stmt = $conn->prepare("SELECT m.id, m.content, m.subject_id, COUNT(r.message_id) AS antall_rapporteringer
                                     FROM message AS m

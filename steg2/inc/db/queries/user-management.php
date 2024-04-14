@@ -106,3 +106,17 @@ function getAllLecturers(\mysqli $conn) {
     $result = $conn->query($query);
     return $result;
 }
+
+function getImg(\mysqli $conn, int $id) {
+    $img = "";
+    $stmt = $conn->prepare("SELECT image FROM user WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->store_result();
+    if ($stmt->num_rows === 1) {
+        $stmt->bind_result($img);
+        $stmt->fetch();
+    }
+    $stmt->close();
+    return $img;
+}
